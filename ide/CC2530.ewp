@@ -1080,6 +1080,12 @@
     <group>
       <name>iic</name>
       <file>
+        <name>$PROJ_DIR$\..\source\components\iic\bh1750.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\source\Components\iic\bh1750.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\source\components\iic\delay.c</name>
       </file>
       <file>
@@ -1101,7 +1107,7 @@
         <name>$PROJ_DIR$\..\source\components\iic\sht2x.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\sht2x.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\sht2x.h</name>
       </file>
     </group>
     <group>

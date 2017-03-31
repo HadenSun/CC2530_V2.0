@@ -12,6 +12,7 @@
 #include "iic.h"
 #include "opt3001.h"
 #include "sht2x.h"
+#include "bh1750.h"
 
 /************************************************常量定义****************************************/
 #define TX                  1       // 发送模式
@@ -202,6 +203,13 @@ void main(void)
     Uart1_SendByte('0'+error);
     Uart1_SendByte('\r');
     Uart1_SendByte('\n');
+    
+    error = 0;
+    error |= BH1750_WriteCommand(BH1750_MODE_CH);
+    Uart1_SendString("error:",6);
+    Uart1_SendByte('0'+error);
+    Uart1_SendByte('\r');
+    Uart1_SendByte('\n');
     while (1)
     {
         //if      (appMode == RX)     { RF_RecvPacket(); }    // 接收模块
@@ -222,8 +230,7 @@ void main(void)
         Uart1_SendByte((int)rst%10+'0');
         Uart1_SendByte('\r');
         Uart1_SendByte('\n');
-        LED_B = ~LED_B;
-        halMcuWaitMs(3000);
+        
         
       
         //SHT2X
@@ -245,8 +252,24 @@ void main(void)
         Uart1_SendByte((uchar)tem%10+'0');
         Uart1_SendByte('\r');
         Uart1_SendByte('\n');
+        
+        
+        //bh1750
+        rst = 0;
+        error = 0;
+	error |= BH1750_ReadData(&rst,BH1750_MODE_CH);
+        Uart1_SendString("L:",2);
+        Uart1_SendByte((int)(rst/100)+'0');
+        Uart1_SendByte((int)(rst/10)%10+'0');
+        Uart1_SendByte((int)rst%10+'0');
+        Uart1_SendByte('\r');
+        Uart1_SendByte('\n');
+        Uart1_SendByte('\r');
+        Uart1_SendByte('\n');
+        
+        
+        LED_B = ~LED_B;
         halMcuWaitMs(3000);
-      
     }
 }
 

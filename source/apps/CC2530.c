@@ -18,7 +18,7 @@
 #define TX                  1       // 发送模式
 #define RX                  0       // 接收模式
 
-#define TX_ADDR             0x2520  // 发送地址                 
+#define TX_ADDR             0x2520  // 发送地址
 #define RX_ADDR             0xBEEF  // 接收地址
 
 #define RF_CHANNEL          25      // 2.4 GHz RF channel 11 - 26  步进为5MHZ
@@ -33,6 +33,7 @@ static uint8    pRxData[RF_PKT_MAX_SIZE];               // 接收缓存
 static uint8    pTxData[SEND_LENGTH] = { "123\r\n" };   // 需要发送的数据
 static uint16   SendCnt = 0;                            // 计数发送的数据包数
 static uint16   RecvCnt = 0;                            // 计数接收的数据包数
+static uchar    Uart1_temp = 0;                         // 串口接收数据
 
 /************************************************函数声明****************************************/
 static void RF_SendPacket(void);                  // 发送函数
@@ -50,19 +51,19 @@ static void Uart1_SendByte(uchar n);              // Uart1发送字节
 static void RF_Initial(uint8 mode)
 {
     // 设置地址
-	if (RX == mode)     { basicRfConfig.myAddr = RX_ADDR; } 
-	else                { basicRfConfig.myAddr = TX_ADDR; }    
+	if (RX == mode)     { basicRfConfig.myAddr = RX_ADDR; }
+	else                { basicRfConfig.myAddr = TX_ADDR; }
 
     basicRfConfig.panId = PAN_ID;           // 设置节点PAN ID
     basicRfConfig.channel = RF_CHANNEL;     // 设置节点信道
-    basicRfConfig.ackRequest = TRUE;        // 应答请求  
-    
+    basicRfConfig.ackRequest = TRUE;        // 应答请求
+
     if (basicRfInit(&basicRfConfig) == FAILED)      { HAL_ASSERT(FALSE); }
-          
+
 //    halRfSetTxPower(1);                     // 设置输出功率为4dbm
 
-    if (RX == mode)     { basicRfReceiveOn();  } 
-    else                { basicRfReceiveOff(); }                 
+    if (RX == mode)     { basicRfReceiveOn();  }
+    else                { basicRfReceiveOff(); }
 }
 
 /*************************************************************************************************
@@ -80,7 +81,7 @@ static void RST_System(void)
 * 说明 ：Sendbuffer指向待发送的数据，length发送数据长度                     *
 *************************************************************************************************/
 static void RF_SendPacket(void)
-{ 
+{
     // 发送一包数据，并判断是否发送成功（收到应答）
     if (!basicRfSendPacket(RX_ADDR, pTxData, SEND_LENGTH));
     {
@@ -90,7 +91,7 @@ static void RF_SendPacket(void)
     halMcuWaitMs(500);
     halLedSet(1);
     C51_RTC_EnterSleep();       // 系统进入模式PM2，低功耗，2s后被RTC唤醒
-    RST_System();               // 重新初始化系统  
+    RST_System();               // 重新初始化系统
 }
 
 /*************************************************************************************************
@@ -99,23 +100,27 @@ static void RF_SendPacket(void)
 static void RF_RecvPacket(void)
 {
     uint8 length = 0;
-    
+
     while (!basicRfPacketIsReady());    // 检查模块是否已经可以接收下一个数据
 
     // 把收到的数据复制到pRxData中
-    if ((length=basicRfReceive(pRxData, RF_PKT_MAX_SIZE, NULL)) > 0) 
+    if ((length=basicRfReceive(pRxData, RF_PKT_MAX_SIZE, NULL)) > 0)
     {
         // 判断接收数据是否正确
         if ((SEND_LENGTH==length) && (pRxData[0]=='1')\
         && (pRxData[1]=='2') && (pRxData[2]=='3'))
         {
             RecvCnt++;
-            
+
+            for(length = 0;length < SEND_LENGTH;length++)
+            {
+              Uart1_SendByte(pRxData[length]);
+            }
             // 闪烁LED，指示收到正确数据
             halLedClear(1);
             halMcuWaitMs(500);
             halLedSet(1);
-        }  
+        }
     }
 }
 
@@ -131,10 +136,12 @@ void Uart1_Init(void)
     P0SEL = 0x30;                 //P0.4 P0.5复用
     P2DIR |= 0x40;                //UART1优先
 
-    U1CSR |= 0x80;                //选择UART模式     
+    U1CSR |= 0x80;                //选择UART模式
     U1GCR |= 11;
     U1BAUD |= 216;                //波特率115200
     UTX1IF = 0;                   //清除中断标志
+    U1CSR |= 0x40;                //UART接收使能
+    IEN0 |= 0x88;                 //总中断使能，UART1 RX中断使能
 }
 
 /*************************************************************************************************
@@ -178,82 +185,92 @@ void main(void)
     u8 userRegister;
     nt16 sT;
     nt16 sRH;
-    uint8 appMode = TX;
-    
-    halBoardInit();                                         // 初始外围设备
-    
-    IIC_Init();                                             // IIC初始化
-    
-    Uart1_Init();                                            // Uart1初始化
+    uint8 appMode = RX;
 
-    if (appMode == TX)              { C51_RTC_Initial(); }  // 初始化RTC
-    
+    halBoardInit();                                         // 初始外围设备
+
+    IIC_Init();                                             // IIC初始化
+
+    Uart1_Init();                                           // Uart1初始化
+
+    if (appMode == TX)              { C51_RTC_Initial(); }  // 初始化RTC，发送方需要睡眠
+
     if (halRfInit() == FAILED)      { HAL_ASSERT(FALSE); }  // 对硬件抽象层的rf进行初始化
-       
+
     RF_Initial(appMode);                                    // 初始化RF
 
     if (!C51_GPIO_ioDetective())    { halLedClear(2); }     // IO检测，判断IO是否有短接，断路
-    
+
     //C51_GPIO_OffDetective();                                // 设置无关IO为输入，降低功耗
+
+    if(appMode == TX)
+    {
+      error = 0;
+      error = OPT3001_WriteRegister(OPT3001_REG_ADD_COF,0xCE10);
+      //Uart1_SendString("error:",6);
+      //Uart1_SendByte('0'+error);
+      //Uart1_SendByte('\r');
+      //Uart1_SendByte('\n');
+  
+      error = 0;
+      error |= BH1750_WriteCommand(BH1750_MODE_CH);
+      Uart1_SendString("error:",6);
+      Uart1_SendByte('0'+error);
+      Uart1_SendByte('\r');
+      Uart1_SendByte('\n');
+    }
     
     
-    error = 0;
-    error = OPT3001_WriteRegister(OPT3001_REG_ADD_COF,0xCE10);
-    Uart1_SendString("error:",6);
-    Uart1_SendByte('0'+error);
-    Uart1_SendByte('\r');
-    Uart1_SendByte('\n');
-    
-    error = 0;
-    error |= BH1750_WriteCommand(BH1750_MODE_CH);
-    Uart1_SendString("error:",6);
-    Uart1_SendByte('0'+error);
-    Uart1_SendByte('\r');
-    Uart1_SendByte('\n');
     while (1)
     {
         //if      (appMode == RX)     { RF_RecvPacket(); }    // 接收模块
         //else if (appMode == TX)     { RF_SendPacket(); }    // 发送模块
         // Role is undefined. This code should not be reached
-        //HAL_ASSERT(FALSE);   
-        
+        //HAL_ASSERT(FALSE);
+      if(appMode == RX)
+      {
+        RF_RecvPacket();
+      }
+      else if(appMode == TX)
+      {
+
         rst = 0;
         tem = 0;
         hum = 0;
-        
+
         //OPT3001
         error = 0;
-	error |= OPT3001_ReadResult(&rst);
+				error |= OPT3001_ReadResult(&rst);
         Uart1_SendString("RST:",4);
         Uart1_SendByte((int)(rst/100)+'0');
         Uart1_SendByte((int)(rst/10)%10+'0');
         Uart1_SendByte((int)rst%10+'0');
         Uart1_SendByte('\r');
         Uart1_SendByte('\n');
-        
-        
-      
+
+
+
         //SHT2X
         error = 0;
         error |= SHT2x_SoftReset();
         error |= SHT2x_ReadUserRegister(&userRegister);
         userRegister = (userRegister & ~SHT2x_RES_MASK) | SHT2x_RES_10_13BIT;
         error |= SHT2x_WriteUserRegister(&userRegister);
-        
+
         error |= SHT2x_MeasurePoll(TEMP,&sT);
         error |= SHT2x_MeasurePoll(HUMIDITY,&sRH);
-        
+
         tem = SHT2x_CalcTemperatureC(sT.ul16);
         hum = SHT2x_CalcRH(sRH.ul16);
-        
+
         Uart1_SendString("T:",2);
         Uart1_SendByte((uchar)tem/100+'0');
         Uart1_SendByte((uchar)tem/10%10+'0');
         Uart1_SendByte((uchar)tem%10+'0');
         Uart1_SendByte('\r');
         Uart1_SendByte('\n');
-        
-        
+
+
         //bh1750
         rst = 0;
         error = 0;
@@ -266,10 +283,22 @@ void main(void)
         Uart1_SendByte('\n');
         Uart1_SendByte('\r');
         Uart1_SendByte('\n');
-        
-        
-        LED_B = ~LED_B;
-        halMcuWaitMs(3000);
+
+        RF_SendPacket();
+      }
+
+
     }
 }
 
+
+/****************************************************************
+* 函数 : UART0_ISR() => Uart1接收中断
+* 说明 ：
+****************************************************************/
+#pragma vector = URX0_VECTOR
+ __interrupt void UART0_ISR(void)
+ {
+ 	URX0IF = 0;				//清中断标志
+	Uart1_temp = U0DBUF;                          
+ }

@@ -37,8 +37,9 @@ typedef enum{
 
 
 /************************************************函数声明****************************************/
-u8 BH1750_WriteCommand(u8 cmd);           //写入命令
-u8 BH1750_ReadData(float *rst,u8 mode);   //读取命令
+u8 BH1750_WriteCommand(u8 cmd);                           //写入命令
+u8 BH1750_ReadData(float *rst,u8 mode);                   //读取命令
+u8 BH1750_ReadOriginalData(u8 *RST_H,u8 *RST_L);  //读取原始转换结果
 
 
 #endif

@@ -217,13 +217,13 @@ static void basicRfRxFrmDoneIsr(void)
     halIntOn();
 
     // Read payload length.
-    halRfReadRxBuf(&pHdr->packetLength,1);
+    halRfReadRxBuf(&pHdr->packetLength,1);                        //读取RxBuf里第一条内容，Mac层总长度
     pHdr->packetLength &= BASIC_RF_PLD_LEN_MASK; // Ignore MSB
     
     // Is this an acknowledgment packet?
     // Only ack packets may be 5 bytes in total.
     if (pHdr->packetLength == BASIC_RF_ACK_PACKET_SIZE) {
-
+        // 如果是应答包
         // Read the packet
         halRfReadRxBuf(&rxMpdu[1], pHdr->packetLength);
 
@@ -262,6 +262,7 @@ static void basicRfRxFrmDoneIsr(void)
         rxi.srcAddr= pHdr->srcAddr;
 
         // Read the packet payload
+        // 负载指针
         rxi.pPayload = rxMpdu + BASIC_RF_HDR_SIZE;
 
         // Read the FCS to get the RSSI and CRC

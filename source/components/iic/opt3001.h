@@ -37,9 +37,10 @@ typedef enum{
 
 
 /************************************************函数声明****************************************/
-u8 OPT3001_ReadManufactureerID(u16 *MID);     //读取设备制造商ID
-u8 OPT3001_ReadDeviceID(u16 *DID);            //读取设备型号
-u8 OPT3001_WriteRegister(u8 add,u16 reg);     //寄存器写入信息
-u8 OPT3001_ReadResult(float *rst);            //寄存器读取信息
+u8 OPT3001_ReadManufactureerID(u16 *MID);         //读取设备制造商ID
+u8 OPT3001_ReadDeviceID(u16 *DID);                //读取设备型号
+u8 OPT3001_WriteRegister(u8 add,u16 reg);         //寄存器写入信息
+u8 OPT3001_ReadResult(float *rst);                //寄存器读取信息
+u8 OPT3001_ReadOriginalData(u8 *RST_H,u8 *RST_L); //读取原始转换结果
 
 #endif

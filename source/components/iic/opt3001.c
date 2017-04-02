@@ -99,37 +99,48 @@ u8 OPT3001_WriteRegister(u8 add,u16 reg)
 u8 OPT3001_ReadResult(float *rst)
 {
 	u8 error = 0;
-	u8 temp = 0;
 	u16 re = 0;
 	u8 e = 0;
+        u8 RST_H = 0,RST_L = 0;
 	
 	*rst = 0;
 	
-	//改变寄存器指针
-	IIC_Start();
-	IIC_Send_Byte(OPT3001_ADD_W);
-	error |= IIC_Wait_Ack();
-	IIC_Send_Byte(OPT3001_REG_ADD_RST);
-	error |= IIC_Wait_Ack();
-	IIC_Stop();
-	
-	delay_us(1);
-	
-	//读取结果
-	IIC_Start();
-	IIC_Send_Byte(OPT3001_ADD_R);
-	error |= IIC_Wait_Ack();
-	temp = IIC_Read_Byte(1);
-	e = temp >> 4;
-	re = (temp & 0x0F) << 8;
-	temp = IIC_Read_Byte(0);
-	IIC_Stop();
-	
-	re |= temp;
-	*rst = re * 0.01f * (1 << e);
+	error = OPT3001_ReadOriginalData(&RST_H,&RST_L);    //读取原始转换信息
+        e = (RST_H>>4) & 0x0F;                              //转换范围参数
+	re = (RST_H & 0x0F)<<8 | RST_L;                     //转换原始数据
+	*rst = re * 0.01f * (1 << e);                       //转换对应真实光强度
 	
 	
 	return error;
 }
 
 
+/*************************************************************************************************
+* 函数 ：OPT3001_ReadOriginalData(u8 *RST_H,u8 *RST_L) => 读取原始转换结果
+* 参数 ：RST_H 转换结果高字节
+         RST_L 转换结果低字节
+*************************************************************************************************/
+u8 OPT3001_ReadOriginalData(u8 *RST_H,u8 *RST_L)
+{
+  u8 error = 0;
+  
+  //改变寄存器指针
+  IIC_Start();
+  IIC_Send_Byte(OPT3001_ADD_W);
+  error |= IIC_Wait_Ack();
+  IIC_Send_Byte(OPT3001_REG_ADD_RST);
+  error |= IIC_Wait_Ack();
+  IIC_Stop();
+	
+  delay_us(1);
+  
+  //读取结果
+  IIC_Start();
+  IIC_Send_Byte(OPT3001_ADD_R);
+  error |= IIC_Wait_Ack();
+  *RST_H = IIC_Read_Byte(1);
+  *RST_L = IIC_Read_Byte(0);
+  IIC_Stop();
+  
+  return error;
+}

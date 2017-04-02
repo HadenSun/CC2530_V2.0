@@ -30,7 +30,7 @@ u8 SHT2x_SoftReset()
 	error |= IIC_Wait_Ack();
 	IIC_Stop();
 
-	delay_ms(15000);
+	delay_ms(5000);
 	return error;
 }
 

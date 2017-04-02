@@ -24,7 +24,7 @@
 #define RF_CHANNEL          25      // 2.4 GHz RF channel 11 - 26  步进为5MHZ
 #define PAN_ID              0x2007  // PAN ID
 
-#define SEND_LENGTH         5       // 发送数据每包的长度
+#define SEND_LENGTH         6       // 发送数据每包的长度
 #define RF_PKT_MAX_SIZE     30      // 数据包最大值
 
 /************************************************全局变量****************************************/
@@ -34,6 +34,8 @@ static uint8    pTxData[SEND_LENGTH] = { "123\r\n" };   // 需要发送的数据
 static uint16   SendCnt = 0;                            // 计数发送的数据包数
 static uint16   RecvCnt = 0;                            // 计数接收的数据包数
 static uchar    Uart1_temp = 0;                         // 串口接收数据
+
+static uchar    TransRst[6];
 
 /************************************************函数声明****************************************/
 static void RF_SendPacket(void);                  // 发送函数
@@ -83,7 +85,7 @@ static void RST_System(void)
 static void RF_SendPacket(void)
 {
     // 发送一包数据，并判断是否发送成功（收到应答）
-    if (!basicRfSendPacket(RX_ADDR, pTxData, SEND_LENGTH));
+    if (!basicRfSendPacket(RX_ADDR, TransRst, SEND_LENGTH));
     {
         SendCnt++;
         halLedClear(1);         // LED闪烁，用于指示发送成功并且收到应答
@@ -107,8 +109,7 @@ static void RF_RecvPacket(void)
     if ((length=basicRfReceive(pRxData, RF_PKT_MAX_SIZE, NULL)) > 0)
     {
         // 判断接收数据是否正确
-        if ((SEND_LENGTH==length) && (pRxData[0]=='1')\
-        && (pRxData[1]=='2') && (pRxData[2]=='3'))
+        if ((SEND_LENGTH==length))
         {
             RecvCnt++;
 
@@ -116,6 +117,8 @@ static void RF_RecvPacket(void)
             {
               Uart1_SendByte(pRxData[length]);
             }
+            Uart1_SendByte('\r');
+            Uart1_SendByte('\n');
             // 闪烁LED，指示收到正确数据
             halLedClear(1);
             halMcuWaitMs(500);
@@ -178,9 +181,6 @@ void Uart1_SendByte(uchar n)
 *************************************************************************************************/
 void main(void)
 {
-    float rst;
-    float hum = 0;
-    float tem = 0;
     u8 error = 0;
     u8 userRegister;
     nt16 sT;
@@ -202,15 +202,37 @@ void main(void)
     if (!C51_GPIO_ioDetective())    { halLedClear(2); }     // IO检测，判断IO是否有短接，断路
 
     //C51_GPIO_OffDetective();                                // 设置无关IO为输入，降低功耗
-
+    
     if(appMode == TX)
     {
+      halMcuWaitMs(3000);
       error = 0;
       error = OPT3001_WriteRegister(OPT3001_REG_ADD_COF,0xCE10);
-      //Uart1_SendString("error:",6);
-      //Uart1_SendByte('0'+error);
-      //Uart1_SendByte('\r');
-      //Uart1_SendByte('\n');
+      Uart1_SendString("error:",6);
+      Uart1_SendByte('0'+error);
+      Uart1_SendByte('\r');
+      Uart1_SendByte('\n');
+      
+      error = 0;
+      error |= SHT2x_SoftReset();
+      Uart1_SendString("error:",6);
+      Uart1_SendByte('0'+error);
+      Uart1_SendByte('\r');
+      Uart1_SendByte('\n');
+      halMcuWaitMs(100);
+      error = 0;
+      error |= SHT2x_ReadUserRegister(&userRegister);
+      Uart1_SendString("error:",6);
+      Uart1_SendByte('0'+error);
+      Uart1_SendByte('\r');
+      Uart1_SendByte('\n');
+      error = 0;
+      userRegister = (userRegister & ~SHT2x_RES_MASK) | SHT2x_RES_10_13BIT;
+      error |= SHT2x_WriteUserRegister(&userRegister);
+      Uart1_SendString("error:",6);
+      Uart1_SendByte('0'+error);
+      Uart1_SendByte('\r');
+      Uart1_SendByte('\n');
   
       error = 0;
       error |= BH1750_WriteCommand(BH1750_MODE_CH);
@@ -234,55 +256,40 @@ void main(void)
       else if(appMode == TX)
       {
 
-        rst = 0;
-        tem = 0;
-        hum = 0;
-
         //OPT3001
         error = 0;
-				error |= OPT3001_ReadResult(&rst);
-        Uart1_SendString("RST:",4);
-        Uart1_SendByte((int)(rst/100)+'0');
-        Uart1_SendByte((int)(rst/10)%10+'0');
-        Uart1_SendByte((int)rst%10+'0');
-        Uart1_SendByte('\r');
-        Uart1_SendByte('\n');
+	error |= OPT3001_ReadOriginalData(TransRst+4,TransRst+5);
+        
 
 
 
         //SHT2X
         error = 0;
-        error |= SHT2x_SoftReset();
-        error |= SHT2x_ReadUserRegister(&userRegister);
-        userRegister = (userRegister & ~SHT2x_RES_MASK) | SHT2x_RES_10_13BIT;
-        error |= SHT2x_WriteUserRegister(&userRegister);
-
+        //error |= SHT2x_SoftReset();
+        //Uart1_SendByte(error);
+        //error = 0;
+        //error |= SHT2x_ReadUserRegister(&userRegister);
+        //Uart1_SendByte(error);
+        //error = 0;
+        //userRegister = (userRegister & ~SHT2x_RES_MASK) | SHT2x_RES_10_13BIT;
+        //error |= SHT2x_WriteUserRegister(&userRegister);
+        //Uart1_SendByte(error);
+        //error = 0;
         error |= SHT2x_MeasurePoll(TEMP,&sT);
+        //Uart1_SendByte(error);
+        error = 0;
         error |= SHT2x_MeasurePoll(HUMIDITY,&sRH);
+        //Uart1_SendByte(error);
 
-        tem = SHT2x_CalcTemperatureC(sT.ul16);
-        hum = SHT2x_CalcRH(sRH.ul16);
-
-        Uart1_SendString("T:",2);
-        Uart1_SendByte((uchar)tem/100+'0');
-        Uart1_SendByte((uchar)tem/10%10+'0');
-        Uart1_SendByte((uchar)tem%10+'0');
-        Uart1_SendByte('\r');
-        Uart1_SendByte('\n');
+        TransRst[2] = (sRH.ul16 >> 8) & 0xFF;
+        TransRst[3] = sRH.ul16 & 0xFF;
+        
 
 
         //bh1750
-        rst = 0;
         error = 0;
-	error |= BH1750_ReadData(&rst,BH1750_MODE_CH);
-        Uart1_SendString("L:",2);
-        Uart1_SendByte((int)(rst/100)+'0');
-        Uart1_SendByte((int)(rst/10)%10+'0');
-        Uart1_SendByte((int)rst%10+'0');
-        Uart1_SendByte('\r');
-        Uart1_SendByte('\n');
-        Uart1_SendByte('\r');
-        Uart1_SendByte('\n');
+	error |= BH1750_ReadOriginalData(TransRst,TransRst+1);
+        
 
         RF_SendPacket();
       }

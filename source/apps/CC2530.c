@@ -24,7 +24,7 @@
 #define RF_CHANNEL          25      // 2.4 GHz RF channel 11 - 26  步进为5MHZ
 #define PAN_ID              0x2007  // PAN ID
 
-#define SEND_LENGTH         6       // 发送数据每包的长度
+#define SEND_LENGTH         7       // 发送数据每包的长度
 #define RF_PKT_MAX_SIZE     30      // 数据包最大值
 
 /************************************************全局变量****************************************/
@@ -35,7 +35,7 @@ static uint16   SendCnt = 0;                            // 计数发送的数据包数
 static uint16   RecvCnt = 0;                            // 计数接收的数据包数
 static uchar    Uart1_temp = 0;                         // 串口接收数据
 
-static uchar    TransRst[6];
+static uchar    TransRst[SEND_LENGTH];                  // 需要发送的数据
 
 /************************************************函数声明****************************************/
 static void RF_SendPacket(void);                  // 发送函数
@@ -245,51 +245,63 @@ void main(void)
     
     while (1)
     {
-        //if      (appMode == RX)     { RF_RecvPacket(); }    // 接收模块
-        //else if (appMode == TX)     { RF_SendPacket(); }    // 发送模块
-        // Role is undefined. This code should not be reached
-        //HAL_ASSERT(FALSE);
       if(appMode == RX)
       {
-        RF_RecvPacket();
+        RF_RecvPacket();        //RF接收
       }
       else if(appMode == TX)
       {
 
         //OPT3001
         error = 0;
-	error |= OPT3001_ReadOriginalData(TransRst+4,TransRst+5);
+	error |= OPT3001_ReadOriginalData(TransRst+1,TransRst+2);   //光照强度数据
+        //Uart1_SendByte(TransRst[1]);
+        //Uart1_SendByte(TransRst[2]);
+        
+        
+        //bh1750
+        //error = 0;
+	error |= BH1750_ReadOriginalData(TransRst+1,TransRst+2);    //光照强度数据
+        //Uart1_SendByte(TransRst[1]);
+        //Uart1_SendByte(TransRst[2]);
+        
         
 
-
-
         //SHT2X
-        error = 0;
+        //error = 0;
         //error |= SHT2x_SoftReset();
         //Uart1_SendByte(error);
         //error = 0;
-        //error |= SHT2x_ReadUserRegister(&userRegister);
+        error |= SHT2x_ReadUserRegister(&userRegister);           //读取用户寄存器
+        if( (userRegister & SHT2x_EOB_MASK) == SHT2x_EOB_ON )     //END OF BATTERY为1，电池电压过低
+          error |= BATTERY_ALERT;
         //Uart1_SendByte(error);
+        //Uart1_SendByte(userRegister);
         //error = 0;
         //userRegister = (userRegister & ~SHT2x_RES_MASK) | SHT2x_RES_10_13BIT;
         //error |= SHT2x_WriteUserRegister(&userRegister);
         //Uart1_SendByte(error);
+        
         //error = 0;
-        error |= SHT2x_MeasurePoll(TEMP,&sT);
+        error |= SHT2x_MeasurePoll(TEMP,&sT);             //读取温度信息
         //Uart1_SendByte(error);
-        error = 0;
-        error |= SHT2x_MeasurePoll(HUMIDITY,&sRH);
+        //Uart1_SendByte(sT.s16.u8H);
+        //Uart1_SendByte(sT.s16.u8L);
+        //error = 0;
+        error |= SHT2x_MeasurePoll(HUMIDITY,&sRH);        //读取湿度信息
         //Uart1_SendByte(error);
-
-        TransRst[2] = (sRH.ul16 >> 8) & 0xFF;
-        TransRst[3] = sRH.ul16 & 0xFF;
+        //Uart1_SendByte(sRH.s16.u8H);
+        //Uart1_SendByte(sRH.s16.u8L);
         
-
-
-        //bh1750
-        error = 0;
-	error |= BH1750_ReadOriginalData(TransRst,TransRst+1);
+        TransRst[3] = sT.s16.u8H;
+        TransRst[4] = sT.s16.u8L;
         
+        TransRst[5] = sRH.s16.u8H;
+        TransRst[6] = sRH.s16.u8L;
+
+        
+        
+        TransRst[0] = error;
 
         RF_SendPacket();
       }

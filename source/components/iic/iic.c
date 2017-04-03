@@ -7,6 +7,7 @@
 
 /*********************************************头文件包含******************************************/
 #include "iic.h"
+#include <hal_mcu.h>
 
 
 
@@ -29,7 +30,7 @@ void IIC_Init(void)
 *************************************************************************************************/
 void SDA_OUT()
 {
-  P1DIR |= 0x02;
+  P1DIR |= 0x04;
 }
 
 /*************************************************************************************************
@@ -37,7 +38,7 @@ void SDA_OUT()
 *************************************************************************************************/
 void SDA_IN()
 {
-  P1DIR &= ~0x02;
+  P1DIR &= ~0x04;
 }
 
 /*************************************************************************************************
@@ -48,9 +49,9 @@ void IIC_Start()
   SDA_OUT();
   IIC_SDA=1;
   IIC_SCL=1;
-  delay_us(4);
+  halMcuWaitUs(4);
   IIC_SDA=0;
-  delay_us(4);
+  halMcuWaitUs(4);
   IIC_SCL=0;
 }
 
@@ -63,11 +64,11 @@ void IIC_Stop(void)
 	SDA_OUT();     //sda线输出
 	IIC_SCL=0;
 	IIC_SDA=0;     //STOP:when CLK is high DATA change form low to high
- 	delay_us(4);
+ 	halMcuWaitUs(4);
 	IIC_SCL=1;
-	delay_us(1);
+	halMcuWaitUs(1);
 	IIC_SDA=1;     //发送IIC总线结束信号
-	delay_us(4);
+	halMcuWaitUs(4);
 }
 
 /*************************************************************************************************
@@ -79,8 +80,8 @@ uchar IIC_Wait_Ack(void)
 {
 	uchar ucErrTime=0;
 	SDA_IN();      //SDA设置为输入
-	IIC_SDA=1;delay_us(1);
-	IIC_SCL=1;delay_us(1);
+	IIC_SDA=1;halMcuWaitUs(1);
+	IIC_SCL=1;halMcuWaitUs(1);
 	while(IIC_SDA)
 	{
 		ucErrTime++;
@@ -102,9 +103,9 @@ void IIC_Ack(void)
 	IIC_SCL=0;
 	SDA_OUT();
 	IIC_SDA=0;
-	delay_us(2);
+	halMcuWaitUs(2);
 	IIC_SCL=1;
-	delay_us(2);
+	halMcuWaitUs(2);
 	IIC_SCL=0;
 }
 
@@ -116,9 +117,9 @@ void IIC_NAck(void)
 	IIC_SCL=0;
 	SDA_OUT();
 	IIC_SDA=1;
-	delay_us(2);
+	halMcuWaitUs(2);
 	IIC_SCL=1;
-	delay_us(2);
+	halMcuWaitUs(2);
 	IIC_SCL=0;
 }
 
@@ -128,17 +129,17 @@ void IIC_NAck(void)
 void IIC_Send_Byte(uchar txd)
 {
     uchar t;
-		SDA_OUT();
+    SDA_OUT();
     IIC_SCL=0;//拉低时钟开始数据传输
     for(t=0;t<8;t++)
     {
         IIC_SDA=(txd&0x80)>>7;
         txd<<=1;
-        delay_us(2);   
+        halMcuWaitUs(2);   
         IIC_SCL=1;
-        delay_us(2);
+        halMcuWaitUs(2);
         IIC_SCL=0;
-        delay_us(2);
+        halMcuWaitUs(2);
     }
 }
 
@@ -153,11 +154,11 @@ uchar IIC_Read_Byte(unsigned char ack)
     for(i=0;i<8;i++ )
     {
       IIC_SCL=0;
-      delay_us(2);
-				IIC_SCL=1;
+      halMcuWaitUs(2);
+      IIC_SCL=1;
       receive<<=1;
       if(IIC_SDA)receive++;
-	delay_us(1);
+      halMcuWaitUs(1);
     }
     if (!ack)
         IIC_NAck();//发送nACK

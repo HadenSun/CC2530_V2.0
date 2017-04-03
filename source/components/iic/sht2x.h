@@ -54,7 +54,7 @@ typedef enum{
 	ACK_ERROR 			= 0x01,
 	TIME_OUT_ERROR 	= 0x02,
 	CHECKSUM_ERROR 	= 0x04,
-	UNIT_ERROR 			= 0x08
+	BATTERY_ALERT 			= 0x08
 }etError;
 
 typedef union {

@@ -9,6 +9,8 @@
 #include "sht2x.h"
 #include "delay.h"
 
+#include <hal_mcu.h>
+
 
 /************************************************常量定义****************************************/
 const u16 POLYNOMIAL = 0x131;		//P(x)=x^8+x^5+x^4+1=100110001
@@ -30,7 +32,7 @@ u8 SHT2x_SoftReset()
 	error |= IIC_Wait_Ack();
 	IIC_Stop();
 
-	delay_ms(5000);
+	halMcuWaitMs(5000);
 	return error;
 }
 
@@ -126,14 +128,16 @@ u8 SHT2x_WriteUserRegister(u8 *pRegisterValue)
 
 /*************************************************************************************************
 * 函数 : SHT2x_CheckCrc() => 校验
-
+* 参数 : data - 接收到的数据
+         nbrOfBytes - 接收到的字节数
+         checksum - 校验和
 *************************************************************************************************/
 u8 SHT2x_CheckCrc(u8 data[], u8 nbrOfBytes, u8 checksum)
 {
 	u8 crc = 0,bit;
 	u8 byteCtr;
 
-	for(byteCtr = 0; byteCtr < nbrOfBytes; ++ byteCtr)
+	for(byteCtr = 0; byteCtr < nbrOfBytes; ++byteCtr)
 	{
 		crc ^= (data[byteCtr]);
 		for(bit = 8;bit > 0; bit-- )
@@ -174,11 +178,10 @@ u8 SHT2x_MeasurePoll(etSHT2xMeasureType eSHT2xMeasureType, nt16 *pMeasurand)
 			break;
 	}
 	do {
-		IIC_Start();
 		delay_ms(10);
 		if(i++ >= 20)
 			break;
-
+                IIC_Start();
 		IIC_Send_Byte(I2C_ADR_R);
 		if(!IIC_Wait_Ack())
 			break;
@@ -187,8 +190,10 @@ u8 SHT2x_MeasurePoll(etSHT2xMeasureType eSHT2xMeasureType, nt16 *pMeasurand)
 	if(i>=20)
 		error |= TIME_OUT_ERROR;
 
-	pMeasurand->s16.u8H = data[0] = IIC_Read_Byte(1);
-	pMeasurand->s16.u8L = data[1] = IIC_Read_Byte(1);
+        data[0] = IIC_Read_Byte(1);
+	pMeasurand->s16.u8H = data[0];
+        data[1] = IIC_Read_Byte(1);
+	pMeasurand->s16.u8L = data[1];
 
 	checksum = IIC_Read_Byte(0);
 

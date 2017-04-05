@@ -73,6 +73,8 @@ int8 basicRfGetRssi(void);
 uint8 basicRfReceive(uint8* pRxData, uint8 len, int16* pRssi);
 void basicRfReceiveOn(void);
 void basicRfReceiveOff(void);
+unsigned char basicRfGetTxSeqNumber(void);
+unsigned int basicRfGetTxSrcAddr(void);
 
 /***********************************************************************************
   Copyright 2007 Texas Instruments Incorporated. All rights reserved.

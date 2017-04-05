@@ -13,6 +13,8 @@
 #include "opt3001.h"
 #include "sht2x.h"
 #include "bh1750.h"
+#include "sht1x.h"
+#include "max44009.h"
 
 /************************************************常量定义****************************************/
 #define TX                  1       // 发送模式
@@ -102,6 +104,7 @@ static void RF_SendPacket(void)
 static void RF_RecvPacket(void)
 {
     uint8 length = 0;
+    u16 srcAddr = 0;
 
     while (!basicRfPacketIsReady());    // 检查模块是否已经可以接收下一个数据
 
@@ -112,7 +115,9 @@ static void RF_RecvPacket(void)
         if ((SEND_LENGTH==length))
         {
             RecvCnt++;
-
+            srcAddr = basicRfGetTxSrcAddr();
+            Uart1_SendByte((srcAddr>>8) & 0xFF);
+            Uart1_SendByte(srcAddr & 0xFF);
             for(length = 0;length < SEND_LENGTH;length++)
             {
               Uart1_SendByte(pRxData[length]);
@@ -182,9 +187,17 @@ void Uart1_SendByte(uchar n)
 void main(void)
 {
     u8 error = 0;
-    u8 userRegister;
-    nt16 sT;
-    nt16 sRH;
+    /*
+    //SHT2x
+    u8 userRegister;  //用户寄存器
+    nt16 sT;          //温度
+    nt16 sRH;         //湿度
+    */
+    //SHT1x
+    u8 stateRegister;  //用户寄存器
+    u16 T,RH;         //温湿度
+    u8 checksum;      //校验信息
+   
     uint8 appMode = RX;
 
     halBoardInit();                                         // 初始外围设备
@@ -206,13 +219,18 @@ void main(void)
     if(appMode == TX)
     {
       halMcuWaitMs(3000);
+      /*
+      //OPT3001初始化
       error = 0;
       error = OPT3001_WriteRegister(OPT3001_REG_ADD_COF,0xCE10);
       Uart1_SendString("error:",6);
       Uart1_SendByte('0'+error);
       Uart1_SendByte('\r');
       Uart1_SendByte('\n');
+      */
       
+      /*
+      //SHT2x初始化
       error = 0;
       error |= SHT2x_SoftReset();
       Uart1_SendString("error:",6);
@@ -233,13 +251,20 @@ void main(void)
       Uart1_SendByte('0'+error);
       Uart1_SendByte('\r');
       Uart1_SendByte('\n');
-  
+      */
+      
+      //SHT1x初始化
+      SHT1x_ReConnect();
+      
+      /*
+      //BH1750初始化
       error = 0;
       error |= BH1750_WriteCommand(BH1750_MODE_CH);
       Uart1_SendString("error:",6);
       Uart1_SendByte('0'+error);
       Uart1_SendByte('\r');
       Uart1_SendByte('\n');
+      */
     }
     
     
@@ -251,22 +276,34 @@ void main(void)
       }
       else if(appMode == TX)
       {
-
+        error = 0;
+        
+        /*
         //OPT3001
         error = 0;
 	error |= OPT3001_ReadOriginalData(TransRst+1,TransRst+2);   //光照强度数据
         //Uart1_SendByte(TransRst[1]);
         //Uart1_SendByte(TransRst[2]);
+        */
         
-        
+        /*
         //bh1750
         //error = 0;
 	error |= BH1750_ReadOriginalData(TransRst+1,TransRst+2);    //光照强度数据
+        //Uart1_SendByte(error);
+        //Uart1_SendByte(TransRst[1]);
+        //Uart1_SendByte(TransRst[2]);
+        */
+        
+        //MAX44009
+        //error = 0;
+        error |= MAX_ReadOriginalData(TransRst+1,TransRst+2);     //光照强度数据
+        //Uart1_SendByte(error);
         //Uart1_SendByte(TransRst[1]);
         //Uart1_SendByte(TransRst[2]);
         
         
-
+        /*
         //SHT2X
         //error = 0;
         //error |= SHT2x_SoftReset();
@@ -275,7 +312,7 @@ void main(void)
         error |= SHT2x_ReadUserRegister(&userRegister);           //读取用户寄存器
         if( (userRegister & SHT2x_EOB_MASK) == SHT2x_EOB_ON )     //END OF BATTERY为1，电池电压过低
           error |= BATTERY_ALERT;
-        //Uart1_SendByte(error);
+        Uart1_SendByte(error);
         //Uart1_SendByte(userRegister);
         //error = 0;
         //userRegister = (userRegister & ~SHT2x_RES_MASK) | SHT2x_RES_10_13BIT;
@@ -284,20 +321,47 @@ void main(void)
         
         //error = 0;
         error |= SHT2x_MeasurePoll(TEMP,&sT);             //读取温度信息
-        //Uart1_SendByte(error);
-        //Uart1_SendByte(sT.s16.u8H);
-        //Uart1_SendByte(sT.s16.u8L);
-        //error = 0;
+        Uart1_SendByte(error);
+        Uart1_SendByte(sT.s16.u8H);
+        Uart1_SendByte(sT.s16.u8L);
+        error = 0;
         error |= SHT2x_MeasurePoll(HUMIDITY,&sRH);        //读取湿度信息
-        //Uart1_SendByte(error);
-        //Uart1_SendByte(sRH.s16.u8H);
-        //Uart1_SendByte(sRH.s16.u8L);
+        Uart1_SendByte(error);
+        Uart1_SendByte(sRH.s16.u8H);
+        Uart1_SendByte(sRH.s16.u8L);
         
         TransRst[3] = sT.s16.u8H;
         TransRst[4] = sT.s16.u8L;
         
         TransRst[5] = sRH.s16.u8H;
         TransRst[6] = sRH.s16.u8L;
+        */
+        
+        
+        //SHT1x
+        //error = 0;
+        error |= SHT1x_ReadResult(&T,&checksum,SHT1x_TEMP);           //读取温度信息
+        TransRst[3] = (T >> 8) & 0xFF;
+        TransRst[4] = T & 0xFF;
+        //Uart1_SendByte(error);
+        //Uart1_SendByte(TransRst[3]);
+        //Uart1_SendByte(TransRst[4]);
+        //Uart1_SendByte(checksum);
+        
+        //error = 0;
+        error |= SHT1x_ReadResult(&RH,&checksum,SHT1x_HUMIDITY);      //读取湿度信息
+        TransRst[5] = (RH >> 8) & 0xFF;
+        TransRst[6] = RH & 0xFF;
+        //Uart1_SendByte(error);
+        //Uart1_SendByte(TransRst[5]);
+        //Uart1_SendByte(TransRst[6]);
+        //Uart1_SendByte(checksum);
+        
+        //error = 0;
+        error |= SHT1x_ReadStateRegister(&stateRegister);
+        if(stateRegister & 0x40) error |= BATTERY_ALERT;
+        //Uart1_SendByte(error);
+        //Uart1_SendByte(stateRegister);
 
         
         

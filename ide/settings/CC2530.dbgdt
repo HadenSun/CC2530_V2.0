@@ -19,7 +19,7 @@
           
           
           
-        <Column0>192</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+        <Column0>98</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       </Workspace>
       <Disassembly>
         
@@ -31,7 +31,7 @@
       
       
       
-    <Wnd0>
+    <Wnd3>
         <Tabs>
           <Tab>
             <Identity>TabID-1722-8764</Identity>
@@ -47,7 +47,7 @@
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+      <SelectedTab>0</SelectedTab></Wnd3><Wnd4>
         <Tabs>
           <Tab>
             <Identity>TabID-12470-8768</Identity>
@@ -59,7 +59,7 @@
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd1><Wnd2>
+      <SelectedTab>0</SelectedTab></Wnd4><Wnd5>
         <Tabs>
           <Tab>
             <Identity>TabID-23219-8771</Identity>
@@ -69,20 +69,20 @@
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd2></Windows>
+      <SelectedTab>0</SelectedTab></Wnd5></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\iic\bh1750.c</Filename><XPos>0</XPos><YPos>47</YPos><SelStart>1812</SelStart><SelEnd>1812</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\iic\bh1750.h</Filename><XPos>0</XPos><YPos>15</YPos><SelStart>0</SelStart><SelEnd>1222</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\basicrf\basic_rf.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>366</SelStart><SelEnd>366</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\iic\sht2x.c</Filename><XPos>0</XPos><YPos>151</YPos><SelStart>4391</SelStart><SelEnd>4391</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\iic\sht2x.h</Filename><XPos>0</XPos><YPos>22</YPos><SelStart>1917</SelStart><SelEnd>1917</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\iic\opt3001.c</Filename><XPos>0</XPos><YPos>30</YPos><SelStart>3625</SelStart><SelEnd>3625</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\iic\opt3001.h</Filename><XPos>0</XPos><YPos>18</YPos><SelStart>1273</SelStart><SelEnd>1333</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\apps\CC2530.c</Filename><XPos>0</XPos><YPos>164</YPos><SelStart>6686</SelStart><SelEnd>6686</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\iic\delay.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>465</SelStart><SelEnd>495</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\iic\iic.c</Filename><XPos>0</XPos><YPos>95</YPos><SelStart>3260</SelStart><SelEnd>3260</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\iic\delay.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>1005</SelStart><SelEnd>1005</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\targets\interface\hal_mcu.h</Filename><XPos>0</XPos><YPos>15</YPos><SelStart>1037</SelStart><SelEnd>1037</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\radios\cc2530\hal_mcu.c</Filename><XPos>0</XPos><YPos>39</YPos><SelStart>1384</SelStart><SelEnd>1396</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\iic\iic.h</Filename><XPos>0</XPos><YPos>3</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\targets\srf05_soc\hal_board.c</Filename><XPos>0</XPos><YPos>35</YPos><SelStart>1478</SelStart><SelEnd>1478</SelEnd></Tab><ActiveTab>14</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\apps\CC2530.c</Filename><XPos>0</XPos><YPos>12</YPos><SelStart>7051</SelStart><SelEnd>7051</SelEnd></Tab><ActiveTab>0</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\basicrf\basic_rf.c</Filename><XPos>0</XPos><YPos>242</YPos><SelStart>16148</SelStart><SelEnd>16148</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\basicrf\basic_rf.h</Filename><XPos>0</XPos><YPos>63</YPos><SelStart>2924</SelStart><SelEnd>2943</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\targets\srf05_soc\hal_board.c</Filename><XPos>0</XPos><YPos>76</YPos><SelStart>1478</SelStart><SelEnd>1478</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-05f51ac8><key>iaridepm.enu1</key></Toolbar-05f51ac8></Sizes></Row0><Row1><Sizes><Toolbar-09fede40><key>debuggergui.enu1</key></Toolbar-09fede40></Sizes></Row1><Row2><Sizes/></Row2></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>687</Bottom><Right>266</Right><x>-2</x><y>-2</y><xscreen>267</xscreen><yscreen>243</yscreen><sizeHorzCX>139063</sizeHorzCX><sizeHorzCY>243731</sizeHorzCY><sizeVertCX>139583</sizeVertCX><sizeVertCY>691073</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>687</Bottom><Right>633</Right><x>-2</x><y>-2</y><xscreen>267</xscreen><yscreen>243</yscreen><sizeHorzCX>139063</sizeHorzCX><sizeHorzCY>243731</sizeHorzCY><sizeVertCX>330729</sizeVertCX><sizeVertCY>691073</sizeVertCY></Rect></Wnd2></Sizes></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>241</Bottom><Right>1922</Right><x>-2</x><y>-2</y><xscreen>1924</xscreen><yscreen>243</yscreen><sizeHorzCX>1002083</sizeHorzCX><sizeHorzCY>243731</sizeHorzCY><sizeVertCX>139063</sizeVertCX><sizeVertCY>243731</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-057f1ac8><key>iaridepm.enu1</key></Toolbar-057f1ac8></Sizes></Row0><Row1><Sizes><Toolbar-1c95fb60><key>debuggergui.enu1</key></Toolbar-1c95fb60></Sizes></Row1><Row2><Sizes/></Row2></Top><Left><Row0><Sizes><Wnd4><Rect><Top>-2</Top><Left>-2</Left><Bottom>451</Bottom><Right>189</Right><x>-2</x><y>-2</y><xscreen>190</xscreen><yscreen>167</yscreen><sizeHorzCX>139092</sizeHorzCX><sizeHorzCY>243796</sizeHorzCY><sizeVertCX>139824</sizeVertCX><sizeVertCY>661314</sizeVertCY></Rect></Wnd4></Sizes></Row0></Left><Right><Row0><Sizes><Wnd5><Rect><Top>-2</Top><Left>-2</Left><Bottom>451</Bottom><Right>450</Right><x>-2</x><y>-2</y><xscreen>190</xscreen><yscreen>167</yscreen><sizeHorzCX>139092</sizeHorzCX><sizeHorzCY>243796</sizeHorzCY><sizeVertCX>330893</sizeVertCX><sizeVertCY>661314</sizeVertCY></Rect></Wnd5></Sizes></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>165</Bottom><Right>1368</Right><x>-2</x><y>-2</y><xscreen>1370</xscreen><yscreen>167</yscreen><sizeHorzCX>1002928</sizeHorzCX><sizeHorzCY>243796</sizeHorzCY><sizeVertCX>139092</sizeVertCX><sizeVertCY>243796</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Project>
 

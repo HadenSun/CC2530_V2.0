@@ -92,6 +92,7 @@ uchar IIC_Wait_Ack(void)
 		}
 	}
 	IIC_SCL=0;      // ±÷” ‰≥ˆ0
+        SDA_OUT();
 	return 0;
 }
 

@@ -1083,7 +1083,7 @@
         <name>$PROJ_DIR$\..\source\components\iic\bh1750.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\Components\iic\bh1750.h</name>
+        <name>$PROJ_DIR$\..\source\components\iic\bh1750.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\delay.c</name>
@@ -1095,19 +1095,31 @@
         <name>$PROJ_DIR$\..\source\components\iic\iic.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\iic.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\iic.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\source\components\iic\max44009.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\source\components\iic\max44009.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\opt3001.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\Components\iic\opt3001.h</name>
+        <name>$PROJ_DIR$\..\source\components\iic\opt3001.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\source\components\iic\sht1x.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\source\components\iic\sht1x.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\sht2x.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\Components\iic\sht2x.h</name>
+        <name>$PROJ_DIR$\..\source\components\iic\sht2x.h</name>
       </file>
     </group>
     <group>

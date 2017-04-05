@@ -512,6 +512,35 @@ void basicRfReceiveOff(void)
 
 
 /***********************************************************************************
+* @fn          basicRfGetTxSeqNumber
+*
+* @brief       获取发送Seq. Number
+*
+* @param       void
+*
+* @return      none
+*/
+unsigned char basicRfGetTxSeqNumber(void)
+{
+  return rxi.seqNumber;
+}
+
+
+/***********************************************************************************
+* @fn          basicRfGetTxSrcAddr
+*
+* @brief       获取发送Addr
+* @param       void
+*
+* @return      none
+*/
+unsigned int basicRfGetTxSrcAddr(void)
+{
+  return rxi.srcAddr;
+}
+
+
+/***********************************************************************************
   Copyright 2007 Texas Instruments Incorporated. All rights reserved.
 
   IMPORTANT: Your use of this Software is limited to those specific rights

@@ -32,6 +32,8 @@ void IIC_Stop(void);                      //IIC结束信号
 uchar IIC_Wait_Ack(void);                 //IIC等待回应
 uchar IIC_Read_Byte(unsigned char ack);   //IIC读取一字节
 void IIC_Send_Byte(uchar txd);            //IIC发送一字节
+void SDA_IN();                            //IIC_SDA 输入
+void SDA_OUT();                           //IIC_SDA 输出
 
 
 #endif

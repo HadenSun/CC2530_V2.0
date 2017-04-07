@@ -356,7 +356,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>11101</state>
+          <state>11111</state>
         </option>
         <option>
           <name>CCObjUseModuleName</name>
@@ -905,7 +905,7 @@
         </option>
         <option>
           <name>ExtraOutputFile</name>
-          <state>CC2530_TX.hex</state>
+          <state>CC2530.hex</state>
         </option>
         <option>
           <name>ExtraOutputFormat</name>
@@ -1095,7 +1095,7 @@
         <name>$PROJ_DIR$\..\source\components\iic\iic.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\Components\iic\iic.h</name>
+        <name>$PROJ_DIR$\..\source\components\iic\iic.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\max44009.c</name>

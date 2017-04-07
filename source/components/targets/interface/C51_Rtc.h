@@ -6,7 +6,7 @@
 
 void C51_RTC_Initial(void);                     /* initialize the RTC */
 
-void C51_RTC_EnterSleep(void);                  /* the system enter PM2 mode */
+void C51_RTC_EnterSleep(uint8 sec);                  /* the system enter PM2 mode */
 
 void C51_RTC_SetPeriod(uint16 sec);             /* set the period for systerm sleep */
 

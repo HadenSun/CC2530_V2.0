@@ -402,6 +402,7 @@ uint8 basicRfSendPacket(uint16 destAddr, uint8* pPayload, uint8 length)
 
     if(status == SUCCESS) {
         txState.txSeqNumber++;
+        txState.txSeqNumber = (txState.txSeqNumber & 0x0F) | (pConfig->myAddr << 4);
     }
     
     return status;

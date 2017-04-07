@@ -20,7 +20,7 @@
 #define TX                  1       // 发送模式
 #define RX                  0       // 接收模式
 
-#define TX_ADDR             0x2520  // 发送地址
+#define TX_ADDR             0x2521  // 发送地址
 #define RX_ADDR             0xBEEF  // 接收地址
 
 #define RF_CHANNEL          25      // 2.4 GHz RF channel 11 - 26  步进为5MHZ
@@ -38,9 +38,10 @@ static uint16   RecvCnt = 0;                            // 计数接收的数据包数
 static uchar    Uart1_temp = 0;                         // 串口接收数据
 
 static uchar    TransRst[SEND_LENGTH];                  // 需要发送的数据
+   
 
 /************************************************函数声明****************************************/
-static void RF_SendPacket(void);                  // 发送函数
+static u8 RF_SendPacket(void);                  // 发送函数
 static void RF_RecvPacket(void);                  // 接收函数
 static void RF_Initial(uint8 mode);               // RF初始化
 static void RST_System(void);                     // 重启系统
@@ -84,18 +85,26 @@ static void RST_System(void)
 * 函数 : BSP_RF_SendPacket() => 无线发送数据函数                            *
 * 说明 ：Sendbuffer指向待发送的数据，length发送数据长度                     *
 *************************************************************************************************/
-static void RF_SendPacket(void)
+static u8 RF_SendPacket(void)
 {
+    u8 states = 0;
     // 发送一包数据，并判断是否发送成功（收到应答）
-    if (!basicRfSendPacket(RX_ADDR, TransRst, SEND_LENGTH));
+    if (!basicRfSendPacket(RX_ADDR, TransRst, SEND_LENGTH))
     {
         SendCnt++;
         halLedClear(1);         // LED闪烁，用于指示发送成功并且收到应答
+        states = 0;
     }
+    else
+      states = 1;
     halMcuWaitMs(500);
     halLedSet(1);
-    C51_RTC_EnterSleep();       // 系统进入模式PM2，低功耗，2s后被RTC唤醒
+    if(states)
+      C51_RTC_EnterSleep(2);       // 系统进入模式PM2，低功耗，2s后被RTC唤醒
+    else
+      C51_RTC_EnterSleep(255);
     RST_System();               // 重新初始化系统
+    return states;
 }
 
 /*************************************************************************************************
@@ -198,7 +207,7 @@ void main(void)
     u16 T,RH;         //温湿度
     u8 checksum;      //校验信息
    
-    uint8 appMode = RX;
+    uint8 appMode = TX;
 
     halBoardInit();                                         // 初始外围设备
 
@@ -367,7 +376,7 @@ void main(void)
         
         TransRst[0] = error;
 
-        RF_SendPacket();
+        while(RF_SendPacket());
       }
 
 

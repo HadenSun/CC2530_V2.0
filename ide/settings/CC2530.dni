@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=1749345455
+Checksum=1147837551
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 0
@@ -17,6 +17,8 @@ UseTrigger=0
 TriggerName=main
 LimitSize=0
 ByteLimit=50
+[BreakpointUsageDialog]
+Placement=_ 461 223 906 506
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

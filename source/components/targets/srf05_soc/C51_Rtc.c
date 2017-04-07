@@ -48,9 +48,9 @@ void C51_RTC_SetPeriod(uint16 sec)
 /**************************************************************************************************
 *Function   : C51_RTC_EnterSleep() => the system enter PM2 mode 
 **************************************************************************************************/
-void C51_RTC_EnterSleep(void)
+void C51_RTC_EnterSleep(uint8 sec)
 {
-    C51_RTC_SetPeriod(2);       // set the time of sleep
+    C51_RTC_SetPeriod(sec);       // set the time of sleep
     C51_RTC_SysPowerMode(2);    // make the system enter PM2 mode
 }
 

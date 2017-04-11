@@ -15,6 +15,7 @@
 #include "bh1750.h"
 #include "sht1x.h"
 #include "max44009.h"
+#include "bmp280.h"
 
 /************************************************常量定义****************************************/
 #define TX                  1       // 发送模式
@@ -206,6 +207,9 @@ void main(void)
     u8 stateRegister;  //用户寄存器
     u16 T,RH;         //温湿度
     u8 checksum;      //校验信息
+    //BMP280
+    u16 data;
+    u8 xdata;
    
     uint8 appMode = TX;
 
@@ -274,6 +278,9 @@ void main(void)
       Uart1_SendByte('\r');
       Uart1_SendByte('\n');
       */
+      
+      //BMP280初始化
+      BMP280_Init();
     }
     
     
@@ -371,6 +378,13 @@ void main(void)
         if(stateRegister & 0x40) error |= BATTERY_ALERT;
         //Uart1_SendByte(error);
         //Uart1_SendByte(stateRegister);
+        
+        
+        
+        //BMP280
+        error |= BMP280_TransStart();
+        error |= BMP280_ReadResult(&data,&xdata,BMP_TEMP);
+        error |= BMP280_ReadResult(&data,&xdata,BMP_PRESS);
 
         
         

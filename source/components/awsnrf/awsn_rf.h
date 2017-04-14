@@ -1,82 +1,39 @@
 /***********************************************************************************
-  Filename:     main.c
+  Filename:     awsn_rf.h
 
-  Description:  演示文件
+  Description:  AWSN(Agriculture Wireless Sensor Network) RF 库头文件
 
 ***********************************************************************************/
 
+#ifndef AWSN_RF_H
+#define AWSN_RF_H
 /*********************************************头文件包含******************************************/
-#include <hal_led.h>
-#include <hal_assert.h>
-#include <hal_board.h>
-#include <hal_int.h>
-#include "hal_mcu.h"
-
+#include "hal_types.h"
+#include "hao_defs.h"
+#include "delay.h"
 
 /************************************************常量定义****************************************/
-#define TX                  1       // 发送模式
-#define RX                  0       // 接收模式
+typedef enum {
+  AWSN_ACK,
+  AWSN_ENTER,
+  AWSN_ADD,
+  AWSN_SYN,
+  AWSN_DATA,
+  AWSN_NONE
+} awsnRfRxState_t
 
-#define TX_ADDR             0x2520  // 发送地址
-#define RX_ADDR             0xBEEF  // 接收地址
 
+typedef struct {
+  uint16 myAddr;      //节点地址
+  uint16 panId;       //节点Pan Id
+  uint8 channel;      //RF 通道（11-26之间）
+  uint8 txPower;      //发射功率
+  uint8 cycleTime;    //通信周期
+}awsnRfCfg_t
 
-/************************************************全局变量****************************************/
-static basicRfCfg_t basicRfConfig;
-static uint8    pRxData[RF_PKT_MAX_SIZE];               // 接收缓存
-static uint8    pTxData[SEND_LENGTH] = { "123\r\n" };   // 需要发送的数据
-static uint16   SendCnt = 0;                            // 计数发送的数据包数
-static uint16   RecvCnt = 0;                            // 计数接收的数据包数
 
 /************************************************函数声明****************************************/
-static void RF_SendPacket(void);        // 发送函数
-static void RF_RecvPacket(void);        // 接收函数
-static void RF_Initial(uint8 mode);     // RF初始化
-static void RST_System(void);           // 重启系统
-
-/*************************************************************************************************
-* 函数 ：   RF_Initial() => 初始化RF芯片
-* 输入 ：   mode, =0,接收模式， else,发送模式
-*************************************************************************************************/
-static void RF_Initial(uint8 mode)
-{
-
-}
-
-/*************************************************************************************************
-* 函数 ：RST_System() => 重新启动系统，用于系统被唤醒后
-*************************************************************************************************/
-static void RST_System(void)
-{
-
-}
-
-/*************************************************************************************************
-* 函数 : BSP_RF_SendPacket() => 无线发送数据函数                            *
-* 说明 ：Sendbuffer指向待发送的数据，length发送数据长度                     *
-*************************************************************************************************/
-static void RF_SendPacket(void)
-{
-
-}
-
-/*************************************************************************************************
-* 函数 ：RF_RecvPacket() => 无线数据接收处理
-*************************************************************************************************/
-static void RF_RecvPacket(void)
-{
-
-}
-
-/*************************************************************************************************
-* 函数 : main() => 主函数，程序入口
-* 说明 ：发送方：每2s被RTC唤醒一次，醒来后发送一包数据，每包数据长度为5个字节，"123/r/n",蓝色LED
-         闪烁表明发送成功，并且收到正确的应答数据。
-         接收方: 如果接收到数据长度为5个字节，且前三个为“123”即数据接收正确，同时蓝色LED闪烁一次
-         指示收到正确数据。
-         注意：appMode = TX（发送程序）， =RX（接收程序）
-*************************************************************************************************/
-void main(void)
-{
-
-}
+uint8 awsnRfInit(awsnRfCfg_t* pRfConfig);                               //RF初始化
+uint8 awsnRfSendPacket(uint16 destAddr,uint8 *pPayload,uint8 length);   //RF发送数据
+uint8 awsnRfPacketIsReady(void);                                        //接收数据是否完成
+uint8 awsnRfRecieve(uint8 *pRxData,UINT8 len, int16* pRssi);            //复制负载内容到buffer中

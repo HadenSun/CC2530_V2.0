@@ -1053,6 +1053,12 @@
   </group>
   <group>
     <name>awsn_rf</name>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\awsnrf\awsn_rf.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\awsnrf\awsn_rf.h</name>
+    </file>
   </group>
   <group>
     <name>basic rf</name>
@@ -1134,7 +1140,7 @@
         <name>$PROJ_DIR$\..\source\components\iic\uart.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\uart.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\uart.h</name>
       </file>
     </group>
     <group>

@@ -15,7 +15,7 @@
 #include "hal_mcu.h"
 #include "hal_button.h"
 #include "hal_rf.h"
-#include "awsn_rf.h"
+#include "basic_rf.h"
 #include "c51_gpio.h"
 #include "c51_rtc.h"
 #include "iic.h"
@@ -47,7 +47,7 @@
 
 
 /************************************************全局变量****************************************/
-static awsnRfCfg_t awsnRfConfig;
+static basicRfCfg_t basicRfConfig;
 static uint8    pRxData[RF_PKT_MAX_SIZE];               // 接收缓存
 static uint8    pTxData[SEND_LENGTH] = { 0x00 };  		 	// 需要发送的数据
 static uint16   SendCnt = 0;                            // 计数发送的数据包数
@@ -101,18 +101,18 @@ static void Data_Init()
 static void RF_Initial(uint8 mode)
 {
     // 设置地址
-	if (RX == mode)     { awsnRfConfig.myAddr = RX_ADDR; }
-	else                { awsnRfConfig.myAddr = TX_ADDR; }
+	if (RX == mode)     { basicRfConfig.myAddr = RX_ADDR; }
+	else                { basicRfConfig.myAddr = TX_ADDR; }
 
-    awsnRfConfig.panId = PAN_ID;           // 设置节点PAN ID
-    awsnRfConfig.channel = RF_CHANNEL;     // 设置节点信道
+    basicRfConfig.panId = PAN_ID;           // 设置节点PAN ID
+    basicRfConfig.channel = RF_CHANNEL;     // 设置节点信道
 
-    if (awsnRfInit(&awsnRfConfig) == FAILED)      { HAL_ASSERT(FALSE); }
+    if (basicRfInit(&basicRfConfig) == FAILED)      { HAL_ASSERT(FALSE); }
 
 //    halRfSetTxPower(1);                     // 设置输出功率为4dbm
 
-    if (RX == mode)     { awsnRfReceiveOn();  }
-    else                { awsnRfReceiveOff(); }
+    if (RX == mode)     { basicRfReceiveOn();  }
+    else                { basicRfReceiveOff(); }
 }
 
 /*************************************************************************************************

@@ -425,6 +425,12 @@ uint8 basicRfPacketIsReady(void)
 }
 
 
+void basicRfPacketIsReadyIn(uint8 state)
+{
+    rxi.isReady = state;
+}
+
+
 /**********************************************************************************
 * @fn          basicRfReceive
 *

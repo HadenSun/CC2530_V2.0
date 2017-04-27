@@ -52,5 +52,7 @@ u8 SHT1x_WriteByte(u8 value);   //写字节数据
 u8 SHT1x_ReadByte(u8 ack);      //读取字节数据
 u8 SHT1x_ReadResult(u16 *p_value, u8 *p_checksum, u8 mode);    //采集温湿度信息
 u8 SHT1x_ReadStateRegister(u8 *stateRegister);                 //读取状态寄存器信息
+u8 SHT1x_ReadTempResult(u16 *p_value);            //读取真实温度数据
+u8 SHT1x_ReadRhResult(u16 *p_value);              //读取真实湿度信息
 #endif
 

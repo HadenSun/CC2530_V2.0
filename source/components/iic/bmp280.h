@@ -12,6 +12,10 @@
 
 
 /************************************************常量定义****************************************/
+#define BMP280_U32_t long unsigned int
+#define BMP280_S32_t long signed int
+
+
 typedef enum{
   BMP_TEMP_XLSB   = 0xFC,
   BMP_TEMP_LSB    = 0xFB,
@@ -50,8 +54,7 @@ typedef enum{
   BMP_TEMP
 }bmpMeasureType;
 
-
-typedef union{
+struct bmp_dig{
   unsigned short t1;
   short t2;
   short t3;
@@ -65,7 +68,7 @@ typedef union{
   short p8;
   short p9;
   
-}bmp_dig;
+}Bmp_Dig;
 
 
 /************************************************函数声明****************************************/
@@ -75,5 +78,9 @@ u8 BMP280_TransStart();         //测量开始
 u8 BMP280_Init();               //初始化
 u8 BMP280_ReadResult(u16 *data,u8 *xdata,bmpMeasureType mode);    //读取测量数据
 u8 BMP280_ReadRegister(u8 registerAdd,u8 *data);
+u8 BMP280_ReadPressResult(BMP280_U32_t *rst);         //读取真实压力结果
+u8 BMP280_ReadTempResult(BMP280_S32_t *rst);
+u8 BMP280_Update(void);                               //更新修正参数
+
 
 #endif

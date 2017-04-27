@@ -31,5 +31,6 @@ typedef enum{
 /************************************************函数声明****************************************/
 
 u8 MAX_ReadOriginalData(u8 *RST_H,u8 *RST_L);     //读取测量数据
+u8 MAX_ReadLightData(u8 *RST_H,u8 *RST_L);        //转成实际强度
 
 #endif

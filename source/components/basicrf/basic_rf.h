@@ -75,7 +75,7 @@ void basicRfReceiveOn(void);
 void basicRfReceiveOff(void);
 unsigned char basicRfGetTxSeqNumber(void);
 unsigned int basicRfGetTxSrcAddr(void);
-
+void basicRfPacketIsReadyIn(uint8 state);
 /***********************************************************************************
   Copyright 2007 Texas Instruments Incorporated. All rights reserved.
 

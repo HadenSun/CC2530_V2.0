@@ -16,6 +16,21 @@
 #define u16 unsigned int
 typedef signed short int vs16;
 
+
+/************************************************结构定义****************************************/
+struct sensor_data{
+  unsigned short AirPressure[8];
+  unsigned short Illumination[8];
+  unsigned short Temperature[8];
+  unsigned short Humidity[8];
+  unsigned char error[8];
+}WireSensorData;
+
+
+unsigned short co2Concentration[2];
+
+
+
 /************************************************函数声明****************************************/
 //延时函数
 void delay_us(uint n);    //n*3 us

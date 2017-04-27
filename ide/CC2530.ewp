@@ -1098,13 +1098,13 @@
         <name>$PROJ_DIR$\..\source\components\iic\delay.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\delay.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\delay.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\iic.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\iic.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\iic.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\max44009.c</name>
@@ -1129,6 +1129,12 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\Components\iic\sht2x.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\source\components\iic\uart.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\source\components\iic\uart.h</name>
       </file>
     </group>
     <group>

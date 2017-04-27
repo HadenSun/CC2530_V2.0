@@ -8,6 +8,7 @@
 /*********************************************头文件包含******************************************/
 #include "sht1x.h"
 #include "delay.h"
+#include "uart.h"
 
 #include <hal_mcu.h>
 
@@ -99,7 +100,7 @@ u8 SHT1x_WriteByte(u8 value)
 *************************************************************************************************/
 u8 SHT1x_ReadByte(u8 ack)
 {
-	u8 i,val = 0;
+  u8 i,val = 0;
   IIC_SDA = 1;
   SDA_IN();
 
@@ -134,7 +135,7 @@ u8 SHT1x_ReadByte(u8 ack)
 *************************************************************************************************/
 u8 SHT1x_ReadResult(u16 *p_value, u8 *p_checksum, u8 mode)
 {
-	u8 error = 0;
+  u8 error = 0;
   u16 i;
 
   SHT1x_TransStart();
@@ -146,8 +147,6 @@ u8 SHT1x_ReadResult(u16 *p_value, u8 *p_checksum, u8 mode)
     case SHT1x_TEMP:
       error |= SHT1x_WriteByte(SHT1x_T_MEASUREMENT);
       break;
-    default:
-      break;
   }
 
   SDA_IN();
@@ -156,9 +155,8 @@ u8 SHT1x_ReadResult(u16 *p_value, u8 *p_checksum, u8 mode)
     halMcuWaitUs(4);
     if(!IIC_SDA) break;
   }
-  if(IIC_SDA) error |= SHT1x_ACK_ERROR;
+  if(IIC_SDA) error |= SHT1x_TIME_OUT_ERROR;
 
-  SDA_OUT();
 
   *p_value = SHT1x_ReadByte(1);
   *p_value <<= 8;
@@ -177,12 +175,48 @@ u8 SHT1x_ReadResult(u16 *p_value, u8 *p_checksum, u8 mode)
 u8 SHT1x_ReadStateRegister(u8 *stateRegister)
 {
   u8 error = 0;
-  u8 checksum = 0;
+  //u8 checksum = 0;
 
   SHT1x_TransStart();
   error |= SHT1x_WriteByte(SHT1x_USER_REG_R);
-  *stateRegister = SHT1x_ReadByte(1);
-  checksum = SHT1x_ReadByte(0);
+  *stateRegister = SHT1x_ReadByte(0);
+  //checksum = SHT1x_ReadByte(0);
 
+  return error;
+}
+
+
+
+/*************************************************************************************************
+* 函数 : SHT1x_ReadTempResult() => 读取真实温度
+* 参数 : p_value - 温度，单位 0.01°C，
+*************************************************************************************************/
+u8 SHT1x_ReadTempResult(u16 *p_value)
+{
+  u8 error = 0;
+  u16 T;
+  u8 checksum;
+  
+  error |= SHT1x_ReadResult(&T,&checksum,SHT1x_TEMP);
+  *p_value = -3960 + (int)T;
+  
+  
+  return error;
+}
+
+
+/*************************************************************************************************
+* 函数 : SHT1x_ReadRhResult() => 读取真实湿度
+* 参数 : p_value - 温度，单位 0.01%HR，
+*************************************************************************************************/
+u8 SHT1x_ReadRhResult(u16 *p_value)
+{
+  u8 error = 0;
+  u16 RH;
+  u8 checksum;
+  
+  error |= SHT1x_ReadResult(&RH,&checksum,SHT1x_HUMIDITY); 
+  *p_value = (uint16)(-204.68f + 3.67f * (float)RH - 0.00015955f * (float)RH * (float)RH);
+  
   return error;
 }

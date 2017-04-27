@@ -13,6 +13,9 @@
 #include "delay.h"
 
 /************************************************常量定义****************************************/
+#define HAL_INFOP_IEEE_OSET 0xC
+
+
 typedef enum {
   AWSN_ACK,
   AWSN_ENTER,
@@ -24,6 +27,7 @@ typedef enum {
 
 
 typedef struct {
+  uint8 macAddr[8];   //mac地址
   uint16 myAddr;      //节点地址
   uint16 panId;       //节点Pan Id
   uint8 channel;      //RF 通道（11-26之间）

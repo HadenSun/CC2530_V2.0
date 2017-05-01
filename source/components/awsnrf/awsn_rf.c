@@ -14,6 +14,8 @@
 #include "awsn_rf.h"
 #include "util.h"
 #include "string.h"
+#include "c51_rtc.h"
+#include <ioCC2530.h>
 
 
 /************************************************常量定义****************************************/
@@ -26,7 +28,7 @@
 
 //MAC部分长度
 #define MAC_LEN_HEAD        (2+1+2+2+2+1+1)   //MAC头长度
-#define MAC_LEN_OVERHEAD    MAC_LEN_HEAD+2      //MAC头+尾长度
+#define MAC_LEN_OVERHEAD    (MAC_LEN_HEAD+2)      //MAC头+尾长度
 
 //FCF帧控制域
 #define AWSN_RF_FCF_ACK     0x8861      //要求应答
@@ -63,7 +65,7 @@ typedef struct {
 typedef struct {
   uint8 txSeqNumber;
   volatile uint8 ackReceived;
-  uint8 rssi;
+  int8 rssi;
   uint8 lqi;
   uint32 frameCounter;
   uint8 receiveOn;
@@ -112,8 +114,7 @@ static void awsnRfBuildHeader(uint8* buffer,uint16 destAddr, uint8 payloadLength
   #ifdef GATEWAY
   //采集卡部分发送的数据不需要应答
   fcf = AWSN_RF_FCF_NACK;
-  #endif
-  #ifdef SENSOR
+  #else
   //传感器节点发送数据需要应答
   fcf = AWSN_RF_FCF_ACK;
   #endif
@@ -143,16 +144,16 @@ static void awsnRfBuildHeader(uint8* buffer,uint16 destAddr, uint8 payloadLength
 *************************************************************************************************/
 static uint8 awsnRfBuildMpdu(uint16 destAddr, uint8 *pPayload, uint8 payloadLength)
 {
-  uint8 hdrLength, n;
+  uint8  n;
 
   awsnRfBuildHeader(txMpdu,destAddr,payloadLength);
 
   for(n = 0; n < payloadLength; n++)
   {
-    txMpdu[MAC_LEN_HEAD+n] = pPayload[n];
+    txMpdu[MAC_LEN_HEAD+1+n] = pPayload[n];
   }
 
-  return MAC_LEN_HEAD + payloadLength;
+  return MAC_LEN_HEAD + payloadLength + 1;
 }
 
 
@@ -163,7 +164,7 @@ static uint8 awsnRfBuildMpdu(uint16 destAddr, uint8 *pPayload, uint8 payloadLeng
 static void awsnRfRxInterrupt(void)
 {
   awsnRfPktHdr_t *pHdr;
-  uint8 *pStateWord;
+  uint8 *pStatusWord;
 
   pHdr = (awsnRfPktHdr_t*)rxMpdu;
 
@@ -183,30 +184,31 @@ static void awsnRfRxInterrupt(void)
   //传感器节点
   if(pHdr->packetLength == PKT_LEN_ACK + MAC_LEN_OVERHEAD) {
     //如果是应答帧
-    pStateWord = rxMpdu + MAC_LEN_HEAD + PKT_LEN_ACK;
-    if((*pStateWord & AWSN_RF_CRC_OK_BM)&&(pHdr->seqNumber == txState.txSeqNumber) {
-      txState.rssi = rxMpdu[MAC_LEN_HEAD];    //读取采集卡返回的RSSI
-      txState.lqi = rxMpdu[MAC_LEN_HEAD+1];   //读取采集卡返回的LQI
+    rxi.pPayload = rxMpdu + MAC_LEN_HEAD + 1;
+    pStatusWord = rxMpdu + MAC_LEN_HEAD + PKT_LEN_ACK + 1;
+    if((pStatusWord[1] & AWSN_RF_CRC_OK_BM)) {
+      txState.rssi = rxi.pPayload[0];    //读取采集卡返回的RSSI
+      txState.lqi = rxi.pPayload[1];   //读取采集卡返回的LQI
       txState.ackReceived = TRUE;
       rxi.status = AWSN_ACK;
     }
   }
   else if(pHdr->packetLength == PKT_LEN_ADD + MAC_LEN_OVERHEAD) {
     //地址分配帧
-    pStateWord = rxMpdu + MAC_LEN_HEAD + PKT_LEN_ADD;
-    if((*pStateWord & AWSN_RF_CRC_OK_BM)&&(pHdr->seqNumber == txState.txSeqNumber)) {
-      qConfig->panId = rxMpdu[MAC_LEN_HEAD]
-      qConfig->myAddr = rxMpdu[MAC_LEN_HEAD+1];
+    pStatusWord = rxMpdu + MAC_LEN_HEAD + PKT_LEN_ADD;
+    if((*pStatusWord & AWSN_RF_CRC_OK_BM)) {
+      pConfig->panId = rxMpdu[MAC_LEN_HEAD];
+      pConfig->myAddr = rxMpdu[MAC_LEN_HEAD+1];
       txState.ackReceived = TRUE;
       rxi.status = AWSN_ADD;
     }
   }
   else if(pHdr->packetLength == PKT_LEN_SYN + MAC_LEN_OVERHEAD) {
     //同步帧
-    pStateWord = rxMpdu + MAC_LEN_HEAD + PKT_LEN_SYN;
-    if(*pStateWord & AWSN_RF_CRC_OK_BM)
+    pStatusWord = rxMpdu + MAC_LEN_HEAD + PKT_LEN_SYN;
+    if(*pStatusWord & AWSN_RF_CRC_OK_BM)
     {
-      qConfig->cycleTime = rxMpdu[MAC_LEN_HEAD];
+      pConfig->cycleTime = rxMpdu[MAC_LEN_HEAD];
       rxi.status = AWSN_SYN;
     }
   }
@@ -216,8 +218,8 @@ static void awsnRfRxInterrupt(void)
   //采集卡节点
   if(pHdr->packetLength == PKT_LEN_ENTER + MAC_LEN_OVERHEAD) {
     //入网帧
-    pStateWord = rxMpdu + MAC_LEN_HEAD + PKT_LEN_ENTER;
-    if(*pStateWord & AWSN_RF_CRC_OK_BM) {
+    pStatusWord = rxMpdu + MAC_LEN_HEAD + PKT_LEN_ENTER;
+    if(*pStatusWord & AWSN_RF_CRC_OK_BM) {
       rxi.status = AWSN_ENTER;
     }
   }
@@ -225,13 +227,16 @@ static void awsnRfRxInterrupt(void)
     //数据帧
     rxi.length = pHdr->packetLength - MAC_LEN_OVERHEAD;
     rxi.srcAddr = pHdr->srcAddr;
-    rxi.pPayload = rxMpdu + MAC_LEN_HEAD;
-    pStateWord = rxi.pPayload + rxi.length;
-    rxi.rssi = pStateWord[0];
+    rxi.pPayload = rxMpdu + MAC_LEN_HEAD + 1;
+    pStatusWord = rxi.pPayload + rxi.length;
+    rxi.rssi = pStatusWord[0];
 
-    if((pStateWord[1] & AWSN_RF_CRC_OK_BM) && (rxi.seqNumber != pHdr->seqNumber)) {
+    if((pStatusWord[1] & AWSN_RF_CRC_OK_BM)) {
       rxi.isReady = TRUE;
       rxi.status = AWSN_DATA;
+      
+      pStatusWord[1] = 0;
+      awsnRfGatewaySendPacket(rxi.srcAddr,pStatusWord,2);
     }
     rxi.seqNumber = pHdr->seqNumber;
   }
@@ -258,22 +263,23 @@ uint8 awsnRfInit(awsnRfCfg_t* pRfConfig)
   halIntOff();
 
   pConfig = pRfConfig;
-  txi.pPayload = NULL;
+  rxi.pPayload = NULL;
 
   txState.frameCounter = 0;
+  txState.receiveOn = TRUE;
 
   //设置频道
   halRfSetChannel(pConfig->channel);
 
   //写入短地址
   halRfSetShortAddr(pConfig->myAddr);
-  halRfPanId(pConfig->panId);
+  halRfSetPanId(pConfig->panId);
 
   //读取MAC地址
   awsnRfGetMacAddr();
 
   //设置接收中断
-  halRfInterrruptConfig(awsnRfRxInterrupt);
+  halRfRxInterruptConfig(awsnRfRxInterrupt);
 
   halIntOn();
 
@@ -303,7 +309,7 @@ uint8 awsnRfSensorSendPacket(uint16 destAddr,uint8 *pPayload,uint8 length)
   length = min(length,AWSN_RF_LEN_MAX_PAYLOAD);
 
   //等待发送成功
-  halRfWaitTransceiveReady();
+  halRfWaitTransceiverReady();
 
   //关闭RF接收中断
   halRfDisableRxInterrupt();
@@ -314,17 +320,18 @@ uint8 awsnRfSensorSendPacket(uint16 destAddr,uint8 *pPayload,uint8 length)
 
   //打开接收中断，等待应答
   halRfEnableRxInterrupt();
+  
+  //等待应答消息
+  txState.ackReceived = FALSE;
 
   //发送数据
   if(halRfTransmit() != SUCCESS) {
     status = FAILED;
   }
 
-  //等待应答消息
-  txState.ackReceived = FALSE;
-
   //超时设置，包含12个传输时间，应答包的传送时间，和一些额外时间
-  halMcuWaiUs((12 * AWSN_RF_SYMBOL_DURATION) + (AWSN_RF_ACK_DURATION) + (2 * AWSN_RF_SYMBOL_DURATION) + 10);
+  //halMcuWaitUs((12 * AWSN_RF_SYMBOL_DURATION) + (AWSN_RF_ACK_DURATION) + (2 * AWSN_RF_SYMBOL_DURATION) + 100);
+  halMcuWaitMs(2);
 
   status = txState.ackReceived? SUCCESS : FAILED;
 
@@ -356,19 +363,12 @@ uint8 awsnRfGatewaySendPacket(uint16 destAddr,uint8 *pPayload,uint8 length)
   uint8 mpduLength;
   uint8 status;
 
-  //打开RF接收
-  if(!txState.receiveOn) {
-    halRfReceiveOn();
-  }
 
   //检查包长度
   length = min(length,AWSN_RF_LEN_MAX_PAYLOAD);
 
   //等待发送成功
-  halRfWaitTransceiveReady();
-
-  //关闭RF接收中断
-  halRfDisableRxInterrupt();
+  halRfWaitTransceiverReady();
 
   mpduLength = awsnRfBuildMpdu(destAddr,pPayload,length);
 
@@ -381,11 +381,6 @@ uint8 awsnRfGatewaySendPacket(uint16 destAddr,uint8 *pPayload,uint8 length)
   }
   else {
     status = SUCCESS;
-  }
-
-
-  if(!txState.receiveOn) {
-    halRfReceiveOff();
   }
 
 
@@ -410,14 +405,14 @@ uint8 awsnRfPacketIsReady(void)
 
 
 /*************************************************************************************************
-* 函数 ：  awsnRfRecieve
+* 函数 ：  awsnRfRecive
 * 介绍 ：  复制负载内容到buffer中
 * 参数 ：  pRxData - buffer指针
 *         len - 负载长度
 *         pRssi - 接收信号强度
 * 返回值：
 *************************************************************************************************/
-uint8 awsnRfRecieve(uint8 *pRxData,uint8 len, int8* pRssi)
+uint8 awsnRfReceive(uint8 *pRxData,uint8 len, int8* pRssi)
 {
   halIntOff();
   memcpy(pRxData,rxi.pPayload,min(rxi.length,len));
@@ -442,7 +437,7 @@ uint8 awsnRfRecieve(uint8 *pRxData,uint8 len, int8* pRssi)
 * 函数 ：  awsnRfRecieveOn
 * 介绍 ：  接收打开
 *************************************************************************************************/
-void awsnRfRecieveOn(void)
+void awsnRfReceiveOn(void)
 {
   txState.receiveOn = TRUE;
   halRfReceiveOn();
@@ -453,7 +448,7 @@ void awsnRfRecieveOn(void)
 * 函数 ：  awsnRfRecieveOff
 * 介绍 ：  接收关闭
 *************************************************************************************************/
-void awsnRfRecieveOff(void)
+void awsnRfReceiveOff(void)
 {
   txState.receiveOn = FALSE;
   halRfReceiveOff();
@@ -470,6 +465,92 @@ void awsnRfGetMacAddr(void)
 
   for(int i = 0; i < 8; i++)
   {
-    awsnRfCfg_t.macAddr[i] = macaddrptr[i];
+    pConfig->macAddr[i] = macaddrptr[i];
   }
+}
+
+
+/*************************************************************************************************
+* 函数 ：  awsnRfGetTxRssi
+* 介绍 ：  获取发射信号质量
+* 返回值： 网关收到的传感器的RSSI
+*************************************************************************************************/
+int8 awsnRfGetTxRssi(void)
+{
+  int8 rssi;
+
+  if(txState.rssi < 128) {
+    rssi = txState.rssi - halRfGetRssiOffset();
+  }
+  else {
+    rssi = (txState.rssi - 256) - halRfGetRssiOffset();
+  }
+  
+  return rssi;
+}
+
+
+/*************************************************************************************************
+* 函数 ：  awsnRfGetTxLqi
+* 介绍 ：  获取发射信号质量
+* 返回值： 网关收到的传感器的LQI
+*************************************************************************************************/
+uint8 awsnRfGetTxLqi(void)
+{
+  return txState.lqi;
+}
+
+
+/*************************************************************************************************
+* 函数 ：  awsnRfSleep
+* 介绍 ：  休眠
+* 参数 ：  sleepTime - 睡眠时间
+*************************************************************************************************/
+void awsnRfSleep(uint8 sleepTime)
+{
+  uint16 sleepTotalTime = sleepTime * 10;
+  uint8 i;
+
+  if(sleepTime > 25)
+  {
+    for((i = sleepTotalTime / 255); i > 0; i--)
+    {
+      C51_RTC_EnterSleep(255);
+      halMcuInit();       // 重新初始化MCU
+      halMcuWaitMs(5);    // 等待5ms，系统稳定
+      halRfSetTxPower(pConfig->txPower);
+      awsnRfReceiveOff();
+    }
+    C51_RTC_EnterSleep(sleepTotalTime % 255);
+    halMcuInit();       // 重新初始化MCU
+    halMcuWaitMs(5);    // 等待5ms，系统稳定
+    halRfSetTxPower(pConfig->txPower);
+    awsnRfReceiveOff();
+  }
+  else if(sleepTime != 0){
+    C51_RTC_EnterSleep(sleepTime * 10);   //睡眠
+    halMcuInit();       // 重新初始化MCU
+    halMcuWaitMs(5);    // 等待5ms，系统稳定
+    halRfSetTxPower(pConfig->txPower);
+    awsnRfReceiveOff();
+  }
+  else if(sleepTime == 0)
+  {
+    C51_RTC_EnterSleep(2);   //睡眠
+    halMcuInit();       // 重新初始化MCU
+    halMcuWaitMs(5);    // 等待5ms，系统稳定
+    halRfSetTxPower(pConfig->txPower);
+    awsnRfReceiveOff();
+  }
+}
+
+
+/*************************************************************************************************
+* 函数 ：  awsnRfGetTxSrcAddr
+* 介绍 ：  获取发送Addr
+* 返回值： 发送方srcaddr
+*************************************************************************************************/
+uint8 awsnRfGetTxSrcAddr(void)
+{
+  return rxi.srcAddr;
 }

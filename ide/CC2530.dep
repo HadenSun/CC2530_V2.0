@@ -2,168 +2,303 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>3819072452</fileChecksum>
+  <fileChecksum>1856431069</fileChecksum>
   <configuration>
     <name>srf05_cc2530</name>
     <outputs>
-      <file>$PROJ_DIR$\..\source\Components\basicrf\basic_rf.h</file>
-      <file>$PROJ_DIR$\..\source\Components\common\cc8051\hal_cc8051.h</file>
-      <file>$PROJ_DIR$\..\source\Components\basicrf\basic_rf.c</file>
-      <file>$PROJ_DIR$\..\source\apps\CC2530.c</file>
-      <file>$PROJ_DIR$\..\source\Components\common\hal_defs.h</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_int.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\CC2530.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\basic_rf.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\bh1750.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_rf_security.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\basic_rf.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\sht1x.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\sht2x.pbi</file>
       <file>$PROJ_DIR$\temp\CC2530\C51_Rtc.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_mcu.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\iic.pbi</file>
+      <file>$PROJ_DIR$\..\source\apps\CC2530.c</file>
+      <file>$PROJ_DIR$\..\source\Components\awsnrf\awsn_rf.h</file>
+      <file>$PROJ_DIR$\..\source\Components\basicrf\basic_rf.h</file>
       <file>$PROJ_DIR$\temp\CC2530\C51_Gpio.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_assert.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_int.pbi</file>
+      <file>$PROJ_DIR$\..\source\Components\basicrf\basic_rf.c</file>
+      <file>$PROJ_DIR$\..\source\components\awsnrf\awsn_rf.c</file>
+      <file>$PROJ_DIR$\..\source\components\iic\bh1750.c</file>
+      <file>$PROJ_DIR$\..\source\Components\iic\bh1750.h</file>
+      <file>$PROJ_DIR$\..\source\components\iic\bmp280.c</file>
+      <file>$PROJ_DIR$\..\source\Components\common\hal_int.c</file>
+      <file>$PROJ_DIR$\..\source\Components\iic\bmp280.h</file>
+      <file>$PROJ_DIR$\temp\CC2530\opt3001.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\uart.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\sht1x.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\bmp280.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\util.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\clock.r51</file>
+      <file>$PROJ_DIR$\CC2530.d51</file>
+      <file>$PROJ_DIR$\temp\CC2530\delay.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\CC2530.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_rf_security.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\basic_rf.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\CC2530.pbd</file>
+      <file>$PROJ_DIR$\temp\CC2530\iic.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\sht2x.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\sht2x.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\max44009.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_digio.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_mcu.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_led.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_led.r51</file>
       <file>$PROJ_DIR$\temp\CC2530\hal_board.pbi</file>
       <file>$PROJ_DIR$\temp\CC2530\hal_assert.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_board.r51</file>
       <file>$PROJ_DIR$\temp\CC2530\C51_Rtc.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\bmp280.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_digio.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\C51_Gpio.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\util.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_board.r51</file>
       <file>$PROJ_DIR$\temp\CC2530\bh1750.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\uart.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_rf.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_int.r51</file>
       <file>$PROJ_DIR$\temp\CC2530\clock.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\util_buffer.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_rf_security.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_led.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\sht1x.pbi</file>
       <file>$PROJ_DIR$\temp\CC2530\hal_rf.pbi</file>
       <file>$PROJ_DIR$\temp\CC2530\hal_button.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\C51_Gpio.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\max44009.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_int.pbi</file>
       <file>$PROJ_DIR$\temp\CC2530\CC2530.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_button.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\delay.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\util.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\opt3001.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\ioCC2530.h</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\hal_lcd.h</file>
       <file>$PROJ_DIR$\temp\CC2530\util_buffer.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\clib\string.h</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\C51_Rtc.h</file>
-      <file>$PROJ_DIR$\temp\CC2530\awsn_rf.r51</file>
       <file>$PROJ_DIR$\temp\CC2530\awsn_rf.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\clib\math.h</file>
-      <file>$PROJ_DIR$\CC2530.d51</file>
-      <file>$PROJ_DIR$\temp\CC2530\util.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\CC2530.pbd</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\c51_gpio.h</file>
-      <file>$TOOLKIT_DIR$\inc\clib\sysmac.h</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_led.pbi</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_digio.pbi</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\hal_rf_security.h</file>
+      <file>$PROJ_DIR$\temp\CC2530\util_buffer.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\bmp280.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_digio.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_mcu.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_rf.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\iic.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\bh1750.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\basic_rf.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_button.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\awsn_rf.r51</file>
+      <file>$PROJ_DIR$\temp\CC2530\opt3001.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\uart.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\max44009.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\delay.pbi</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_rf_security.pbi</file>
+      <file>$PROJ_DIR$\..\source\components\iic\delay.c</file>
+      <file>$PROJ_DIR$\..\source\components\iic\max44009.c</file>
+      <file>$PROJ_DIR$\..\source\components\iic\sht2x.c</file>
+      <file>$PROJ_DIR$\..\source\Components\iic\sht2x.h</file>
+      <file>$PROJ_DIR$\..\source\Components\radios\cc2530\clock.c</file>
+      <file>$PROJ_DIR$\..\source\components\iic\iic.c</file>
+      <file>$PROJ_DIR$\..\source\Components\iic\sht1x.h</file>
+      <file>$PROJ_DIR$\..\source\Components\radios\cc2530\hal_mcu.c</file>
+      <file>$PROJ_DIR$\..\source\Components\iic\max44009.h</file>
+      <file>$PROJ_DIR$\..\source\components\iic\uart.c</file>
+      <file>$PROJ_DIR$\..\source\Components\iic\opt3001.h</file>
+      <file>$PROJ_DIR$\..\source\Components\iic\delay.h</file>
+      <file>$PROJ_DIR$\..\source\Components\iic\iic.h</file>
+      <file>$PROJ_DIR$\..\source\components\iic\opt3001.c</file>
+      <file>$PROJ_DIR$\..\source\components\iic\sht1x.c</file>
+      <file>$PROJ_DIR$\..\source\Components\iic\uart.h</file>
       <file>$PROJ_DIR$\..\source\components\targets\srf05_soc\C51_Gpio.c</file>
+      <file>$PROJ_DIR$\..\source\components\radios\cc2530\hal_rf_security.c</file>
+      <file>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_board.c</file>
       <file>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_assert.c</file>
       <file>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_button.c</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\hal_rf.h</file>
-      <file>$PROJ_DIR$\..\source\components\targets\srf05_soc\C51_Rtc.c</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_board.c</file>
       <file>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_digio.c</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\hal_mcu.h</file>
-      <file>$PROJ_DIR$\..\source\components\radios\cc2530\hal_rf_security.c</file>
-      <file>$PROJ_DIR$\..\source\Components\radios\cc2530\hal_rf.c</file>
-      <file>$PROJ_DIR$\..\source\Components\radios\cc2530\hal_mcu.c</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_board.h</file>
-      <file>$PROJ_DIR$\..\source\Components\radios\cc2530\clock.h</file>
-      <file>$PROJ_DIR$\..\source\Components\radios\cc2530\clock.c</file>
-      <file>$PROJ_DIR$\..\source\components\iic\max44009.h</file>
-      <file>$PROJ_DIR$\..\source\Components\common\hal_types.h</file>
-      <file>$PROJ_DIR$\..\source\components\iic\sht2x.h</file>
-      <file>$PROJ_DIR$\..\source\components\iic\bh1750.c</file>
-      <file>$PROJ_DIR$\..\source\Components\iic\delay.h</file>
-      <file>$PROJ_DIR$\..\source\components\iic\opt3001.c</file>
-      <file>$PROJ_DIR$\..\source\Components\iic\iic.h</file>
-      <file>$PROJ_DIR$\..\source\components\iic\opt3001.h</file>
-      <file>$PROJ_DIR$\..\source\components\iic\sht1x.c</file>
-      <file>$PROJ_DIR$\..\source\components\iic\sht2x.c</file>
-      <file>$PROJ_DIR$\..\source\components\iic\bh1750.h</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\hal_int.h</file>
-      <file>$PROJ_DIR$\..\source\components\iic\bmp280.h</file>
+      <file>$PROJ_DIR$\temp\CC2530\hal_assert.pbi</file>
       <file>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_led.c</file>
-      <file>$PROJ_DIR$\..\source\Components\common\hal_int.c</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\hal_led.h</file>
-      <file>$PROJ_DIR$\..\source\components\iic\iic.c</file>
-      <file>$PROJ_DIR$\..\source\components\iic\sht1x.h</file>
-      <file>$PROJ_DIR$\..\source\components\iic\max44009.c</file>
-      <file>$PROJ_DIR$\..\source\components\iic\uart.c</file>
-      <file>$PROJ_DIR$\..\source\components\iic\bmp280.c</file>
-      <file>$PROJ_DIR$\..\source\components\iic\uart.h</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\hal_button.h</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\hal_assert.h</file>
-      <file>$PROJ_DIR$\..\source\components\iic\delay.c</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\hal_digio.h</file>
-      <file>$PROJ_DIR$\temp\CC2530\uart.r51</file>
-      <file>$PROJ_DIR$\..\source\Components\utils\util.h</file>
-      <file>$PROJ_DIR$\temp\CC2530\clock.r51</file>
-      <file>$PROJ_DIR$\..\source\Components\utils\util_buffer.c</file>
-      <file>$PROJ_DIR$\temp\CC2530\bmp280.r51</file>
-      <file>$PROJ_DIR$\..\source\Components\targets\interface\hal_joystick.h</file>
-      <file>$PROJ_DIR$\temp\CC2530\delay.r51</file>
+      <file>$PROJ_DIR$\..\source\components\targets\srf05_soc\C51_Rtc.c</file>
       <file>$PROJ_DIR$\..\source\Components\utils\util.c</file>
-      <file>$PROJ_DIR$\temp\CC2530\iic.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\max44009.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\opt3001.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\sht1x.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\sht2x.r51</file>
-      <file>$PROJ_DIR$\temp\CC2530\hal_mcu.r51</file>
-      <file>$PROJ_DIR$\..\source\components\awsnrf\awsn_rf.c</file>
-      <file>$PROJ_DIR$\..\source\components\awsnrf\awsn_rf.h</file>
+      <file>$PROJ_DIR$\..\source\Components\radios\cc2530\hal_rf.c</file>
+      <file>$PROJ_DIR$\..\source\Components\utils\util_buffer.c</file>
     </outputs>
-    <file>
-      <name>$PROJ_DIR$\..\source\Components\basicrf\basic_rf.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 10</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 7</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 82 72 64 60 0 4 98 44 53</file>
-        </tool>
-      </inputs>
-    </file>
     <file>
       <name>$PROJ_DIR$\..\source\apps\CC2530.c</name>
       <outputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 36</file>
+          <name>ICC8051</name>
+          <file> 20</file>
         </tool>
         <tool>
-          <name>ICC8051</name>
-          <file> 6</file>
+          <name>BICOMP</name>
+          <file> 45</file>
         </tool>
       </outputs>
-      <inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\Components\basicrf\basic_rf.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 22</file>
+        </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 86 72 94 4 68 41 1 64 82 93 60 0 52 45 77 75 78 73 81 88 71 83 92</file>
+          <file> 55</file>
         </tool>
-      </inputs>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\awsnrf\awsn_rf.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 57</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 47</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\iic\bh1750.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 54</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 38</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\iic\bmp280.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 15</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 49</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\Components\common\hal_int.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 39</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 44</file>
+        </tool>
+      </outputs>
     </file>
     <file>
       <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
           <name>XLINK</name>
-          <file> 49</file>
+          <file> 18</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\iic\delay.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 19</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 61</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\iic\max44009.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 27</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 60</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\iic\sht2x.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 26</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 25</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\Components\radios\cc2530\clock.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 17</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 40</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\iic\iic.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 24</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 53</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\Components\radios\cc2530\hal_mcu.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 29</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 51</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\iic\uart.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 13</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 59</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\iic\opt3001.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 12</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 58</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\components\iic\sht1x.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 14</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 41</file>
         </tool>
       </outputs>
     </file>
@@ -171,411 +306,103 @@
       <name>$PROJ_DIR$\..\source\components\targets\srf05_soc\C51_Gpio.c</name>
       <outputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 16</file>
+          <name>ICC8051</name>
+          <file> 35</file>
         </tool>
         <tool>
-          <name>ICC8051</name>
-          <file> 34</file>
+          <name>BICOMP</name>
+          <file> 4</file>
         </tool>
       </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 52 41 72</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_assert.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 17</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 20</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 94 4 86 72 64</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_button.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 33</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 37</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 72 68 41 1 4 64 93</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\components\targets\srf05_soc\C51_Rtc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 22</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 13</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 45 41 72</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_board.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 19</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 21</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 72 4 96 82 64 68 41 1 42 102 69 52</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_digio.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 55</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 24</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 72 4 68 41 1 64 82 96</file>
-        </tool>
-      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\..\source\components\radios\cc2530\hal_rf_security.c</name>
       <outputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 30</file>
+          <name>ICC8051</name>
+          <file> 21</file>
         </tool>
         <tool>
-          <name>ICC8051</name>
-          <file> 9</file>
+          <name>BICOMP</name>
+          <file> 62</file>
         </tool>
       </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 68 41 1 72 4 64 60 56 98 44 53</file>
-        </tool>
-      </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\source\Components\radios\cc2530\hal_rf.c</name>
+      <name>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_board.c</name>
       <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 37</file>
+        </tool>
         <tool>
           <name>BICOMP</name>
           <file> 32</file>
         </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 27</file>
-        </tool>
       </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 68 41 1 72 4 64 82 94 60 98</file>
-        </tool>
-      </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\source\Components\radios\cc2530\hal_mcu.c</name>
+      <name>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_assert.c</name>
       <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 14</file>
-        </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 110</file>
+          <file> 33</file>
         </tool>
-      </outputs>
-      <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 72 64 69 4 41 94</file>
+          <file> 85</file>
         </tool>
-      </inputs>
+      </outputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\source\Components\radios\cc2530\clock.c</name>
+      <name>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_button.c</name>
       <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 56</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 43</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_digio.c</name>
+      <outputs>
+        <tool>
+          <name>ICC8051</name>
+          <file> 50</file>
+        </tool>
         <tool>
           <name>BICOMP</name>
           <file> 28</file>
         </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 99</file>
-        </tool>
       </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 69 72 4 41 64</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\components\iic\bh1750.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 25</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 8</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 81 77 41 75</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\components\iic\opt3001.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 40</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 107</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 78 77 41 75</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\components\iic\sht1x.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 11</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 108</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 88 77 41 75 92 64 72</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\components\iic\sht2x.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 12</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 109</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 73 77 41 75 64 72</file>
-        </tool>
-      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\..\source\Components\targets\srf05_soc\hal_led.c</name>
       <outputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 54</file>
-        </tool>
-        <tool>
           <name>ICC8051</name>
           <file> 31</file>
         </tool>
-      </outputs>
-      <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 72 86 68 41 1 4 64</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\Components\common\hal_int.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 18</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 5</file>
+          <file> 30</file>
         </tool>
       </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 72 4 82 68 41 1 64</file>
-        </tool>
-      </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\source\components\iic\iic.c</name>
+      <name>$PROJ_DIR$\..\source\components\targets\srf05_soc\C51_Rtc.c</name>
       <outputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 15</file>
-        </tool>
-        <tool>
           <name>ICC8051</name>
-          <file> 105</file>
+          <file> 0</file>
         </tool>
-      </outputs>
-      <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 77 41 75 64 72</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\components\iic\max44009.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 35</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 106</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 71 77 41 75 48 53</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\components\iic\uart.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 26</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 97</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 92 75 72 41</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\components\iic\bmp280.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 23</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 101</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 83 77 41 75 64 72</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\components\iic\delay.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 38</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 103</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 75 72</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\source\Components\utils\util_buffer.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 43</file>
-        </tool>
-        <tool>
-          <name>ICC8051</name>
-          <file> 29</file>
+          <file> 34</file>
         </tool>
       </outputs>
     </file>
@@ -583,39 +410,40 @@
       <name>$PROJ_DIR$\..\source\Components\utils\util.c</name>
       <outputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 50</file>
+          <name>ICC8051</name>
+          <file> 36</file>
         </tool>
         <tool>
-          <name>ICC8051</name>
-          <file> 39</file>
+          <name>BICOMP</name>
+          <file> 16</file>
         </tool>
       </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 98 72 4 60</file>
-        </tool>
-      </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\source\components\awsnrf\awsn_rf.c</name>
+      <name>$PROJ_DIR$\..\source\Components\radios\cc2530\hal_rf.c</name>
       <outputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 47</file>
+          <name>ICC8051</name>
+          <file> 52</file>
         </tool>
         <tool>
+          <name>BICOMP</name>
+          <file> 42</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\source\Components\utils\util_buffer.c</name>
+      <outputs>
+        <tool>
           <name>ICC8051</name>
+          <file> 48</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
           <file> 46</file>
         </tool>
       </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 82 72 64 60 112 75 98 44 53</file>
-        </tool>
-      </inputs>
     </file>
   </configuration>
 </project>

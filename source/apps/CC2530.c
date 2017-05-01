@@ -15,7 +15,7 @@
 #include "hal_mcu.h"
 #include "hal_button.h"
 #include "hal_rf.h"
-#include "basic_rf.h"
+#include "awsn_rf.h"
 #include "c51_gpio.h"
 #include "c51_rtc.h"
 #include "iic.h"
@@ -42,19 +42,21 @@
 
 
 #define SEND_LENGTH         30      // 发送数据每包的长度
-#define CO2_SEND_LENGTH     2
+#define CO2_SEND_LENGTH     3
 #define RF_PKT_MAX_SIZE     30      // 数据包最大值
+
+#define RSSI_H              -65     //RSSI上限
+#define RSSI_L              -85      //RSSI下限
 
 
 /************************************************全局变量****************************************/
-static basicRfCfg_t basicRfConfig;
+static awsnRfCfg_t awsnRfConfig;
 static uint8    pRxData[RF_PKT_MAX_SIZE];               // 接收缓存
-static uint8    pTxData[SEND_LENGTH] = { 0x00 };  		 	// 需要发送的数据
+static uint8    pTxData[SEND_LENGTH] = {3,2,1 };  		 	// 需要发送的数据
 static uint16   SendCnt = 0;                            // 计数发送的数据包数
 static uint16   RecvCnt = 0;                            // 计数接收的数据包数
 static uchar    Uart1_temp = 0;                         // 串口接收数据
 
-static uchar    TransRst[SEND_LENGTH];                  // 需要发送的数据
 
 uint32 counter = 0;         //定时器中断计数
 uchar  timer_flag = 0;      //时间标志
@@ -65,8 +67,13 @@ u8 CO2RecvCount = 0;            //二氧化碳串口接收计数
 u8 RF_TxCounter = 0;            //发送失败计数
 
 
-uint8 pointType = VCC3V;
+uint8 pointType = VCC5V;
+#ifdef GATEWAY
 uint8 appMode = RX;
+#endif
+#ifdef SENSOR
+uint8 appMode = TX;
+#endif
 
 
 /************************************************函数声明****************************************/
@@ -101,18 +108,21 @@ static void Data_Init()
 static void RF_Initial(uint8 mode)
 {
     // 设置地址
-	if (RX == mode)     { basicRfConfig.myAddr = RX_ADDR; }
-	else                { basicRfConfig.myAddr = TX_ADDR; }
+    if (RX == mode)     { awsnRfConfig.myAddr = RX_ADDR; }
+    else                { awsnRfConfig.myAddr = TX_ADDR; }
 
-    basicRfConfig.panId = PAN_ID;           // 设置节点PAN ID
-    basicRfConfig.channel = RF_CHANNEL;     // 设置节点信道
+    awsnRfConfig.panId = PAN_ID;           // 设置节点PAN ID
+    awsnRfConfig.channel = RF_CHANNEL;     // 设置节点信道
+    awsnRfConfig.txPower = 1;
+    awsnRfConfig.cycleTime = 0;
 
-    if (basicRfInit(&basicRfConfig) == FAILED)      { HAL_ASSERT(FALSE); }
+    if (awsnRfInit(&awsnRfConfig) == FAILED)      { HAL_ASSERT(FALSE); }
 
-//    halRfSetTxPower(1);                     // 设置输出功率为4dbm
+    if(RX == mode)    { halRfSetTxPower(2); }                     // 设置输出功率为4dbm
+    else              { halRfSetTxPower(2); }
 
-    if (RX == mode)     { basicRfReceiveOn();  }
-    else                { basicRfReceiveOff(); }
+    if (RX == mode)     { awsnRfReceiveOn();  }
+    else                { awsnRfReceiveOff(); }
 }
 
 /*************************************************************************************************
@@ -131,46 +141,76 @@ static void RST_System(void)
 *************************************************************************************************/
 static u8 RF_SendPacket(void)
 {
-    u8 states = 1;
-    // 发送一包数据，并判断是否发送成功（收到应答）
-    if(pointType == VCC3V)
+  u8 states = 1;
+  // 发送一包数据，并判断是否发送成功（收到应答）
+  if(pointType == VCC3V)
+  {
+    if (!awsnRfSensorSendPacket(RX_ADDR, pTxData, SEND_LENGTH))
     {
-      if (!basicRfSendPacket(RX_ADDR, TransRst, SEND_LENGTH))
-      {
-          SendCnt++;
-          halLedClear(1);         // LED闪烁，用于指示发送成功并且收到应答
-          states = 0;
-      }
-      else
-        states = 1;
-    }
-    else if(pointType == VCC5V)
-    {
-      if(!basicRfSendPacket(RX_ADDR, TransRst, CO2_SEND_LENGTH))
-      {
         SendCnt++;
-        halLedClear(1);
+        halLedClear(1);         // LED闪烁，用于指示发送成功并且收到应答
         states = 0;
-      }
-      else
-        states = 1;
-    }
-
-    halMcuWaitMs(500);
-    halLedSet(1);
-    if(states)
-    {
-      if(RF_TxCounter++ > 14)
-        states = 0;
-    }
-    if(states)
-    {
-      C51_RTC_EnterSleep(2);       // 系统进入模式PM2，低功耗，2s后被RTC唤醒
     }
     else
-      C51_RTC_EnterSleep(240);
-    RST_System();               // 重新初始化系统
-    return states;
+      states = 1;
+  }
+  else if(pointType == VCC5V)
+  {
+    if(!awsnRfSensorSendPacket(RX_ADDR, pTxData, CO2_SEND_LENGTH))
+    {
+      SendCnt++;
+      halLedClear(1);
+      halMcuWaitMs(500);
+      halLedSet(1);
+      states = 0;
+    }
+    else
+      states = 1;
+  }
+  if(states)
+  {
+    if(RF_TxCounter++ > 5)
+    {
+      if(awsnRfConfig.txPower != 2)
+      {
+        awsnRfConfig.txPower++;
+        halRfSetTxPower(awsnRfConfig.txPower);
+      }
+    }
+    else if(RF_TxCounter > 14)
+      states = 0;
+  }
+  else{
+    //成功收到应答信号后，提取信号质量
+    if(awsnRfGetTxRssi() > RSSI_H)      //如果信号质量大于阈值
+    {
+      if(awsnRfConfig.txPower != 0)
+      {
+        awsnRfConfig.txPower--;       //降低发射功率
+        halRfSetTxPower(awsnRfConfig.txPower);
+      }
+    }
+    else if(awsnRfGetTxRssi() < RSSI_L)   //如果信号质量小于阈值
+    {
+      if(awsnRfConfig.txPower != 2)
+      {
+        awsnRfConfig.txPower++;         //增加发射功率
+        halRfSetTxPower(awsnRfConfig.txPower);
+      }
+    }
+
+    //修改采样周期
+    awsnRfConfig.cycleTime = awsnRfGetTxLqi();
+  }
+
+  if(states)
+  {
+    C51_RTC_EnterSleep(2);       // 系统进入模式PM2，低功耗，2s后被RTC唤醒
+  }
+  else
+    awsnRfSleep(awsnRfConfig.cycleTime);    //系统进入模式PM2，低功耗，睡眠时间由网关下发
+
+  return states;
 }
 
 /*************************************************************************************************
@@ -180,20 +220,20 @@ static void RF_RecvPacket(void)
 {
     uint8 length = 0;
     u16 srcAddr = 0;
+    int8 rssi = 0;
 
-    if(!basicRfPacketIsReady())    // 检查模块是否已经可以接收下一个数据
-      return;
-    else
-      basicRfPacketIsReadyIn(FALSE);
+    while(!awsnRfPacketIsReady());    // 检查模块是否已经可以接收下一个数据
 
+    
+    length=awsnRfReceive(pRxData, RF_PKT_MAX_SIZE, &rssi);
     // 把收到的数据复制到pRxData中
-    if ((length=basicRfReceive(pRxData, RF_PKT_MAX_SIZE, NULL)) > 0)
+    if (length > 0)
     {
         // 判断接收数据是否正确
         if ((SEND_LENGTH==length))
         {
             RecvCnt++;
-            srcAddr = basicRfGetTxSrcAddr();
+            srcAddr = awsnRfGetTxSrcAddr();
             srcAddr = srcAddr & 0xff;
             srcAddr = srcAddr - 1;
             WireSensorData.error[srcAddr] = pRxData[0];
@@ -205,20 +245,13 @@ static void RF_RecvPacket(void)
             WireSensorData.Humidity[srcAddr] |= pRxData[6];
             WireSensorData.AirPressure[srcAddr] = pRxData[7]<<8;
             WireSensorData.AirPressure[srcAddr] |= pRxData[8];
-            //if(receive_trans_flag)            //调试使用
-            //{
-            //  Uart1_SendData_Test(srcAddr);
-            //  Uart1_SendByte('\r');
-            //  Uart1_SendByte('\n');
-            //}
-            // 闪烁LED，指示收到正确数据
             halLedClear(1);
             halMcuWaitMs(500);
             halLedSet(1);
         }
         else if(length == CO2_SEND_LENGTH)
         {
-          srcAddr = basicRfGetTxSrcAddr();
+          srcAddr = awsnRfGetTxSrcAddr();
           srcAddr = srcAddr & 0xff;
           srcAddr = srcAddr - 0x09;
           co2Concentration[srcAddr] = pRxData[0] << 8;
@@ -257,20 +290,16 @@ void Timer3_Init(void)
          指示收到正确数据。
          注意：appMode = TX（发送程序）， =RX（接收程序）
 *************************************************************************************************/
+/*
 void main(void)
 {
     u8 error = 0;
-    /*
-    //SHT2x
-    u8 userRegister;  //用户寄存器
-    nt16 sT;          //温度
-    nt16 sRH;         //湿度
-    */
+
     //SHT1x
     u8 stateRegister;  //用户寄存器
     u16 T,RH;         //温湿度
-    //BMP280
 
+    //BMP280
     BMP280_U32_t rst;
 
     //co2
@@ -300,55 +329,13 @@ void main(void)
     //C51_GPIO_OffDetective();                                // 设置无关IO为输入，降低功耗
 
 
+    //外设初始化
     if(appMode == TX && pointType == VCC3V)
     {
       halMcuWaitMs(3000);
-      /*
-      //OPT3001初始化
-      error = 0;
-      error = OPT3001_WriteRegister(OPT3001_REG_ADD_COF,0xCE10);
-      Uart1_SendString("error:",6);
-      Uart1_SendByte('0'+error);
-      Uart1_SendByte('\r');
-      Uart1_SendByte('\n');
-      */
-
-      /*
-      //SHT2x初始化
-      error = 0;
-      error |= SHT2x_SoftReset();
-      Uart1_SendString("error:",6);
-      Uart1_SendByte('0'+error);
-      Uart1_SendByte('\r');
-      Uart1_SendByte('\n');
-      halMcuWaitMs(100);
-      error = 0;
-      error |= SHT2x_ReadUserRegister(&userRegister);
-      Uart1_SendString("error:",6);
-      Uart1_SendByte('0'+error);
-      Uart1_SendByte('\r');
-      Uart1_SendByte('\n');
-      error = 0;
-      userRegister = (userRegister & ~SHT2x_RES_MASK) | SHT2x_RES_10_13BIT;
-      error |= SHT2x_WriteUserRegister(&userRegister);
-      Uart1_SendString("error:",6);
-      Uart1_SendByte('0'+error);
-      Uart1_SendByte('\r');
-      Uart1_SendByte('\n');
-      */
 
       //SHT1x初始化
       SHT1x_ReConnect();
-
-      /*
-      //BH1750初始化
-      error = 0;
-      error |= BH1750_WriteCommand(BH1750_MODE_CH);
-      Uart1_SendString("error:",6);
-      Uart1_SendByte('0'+error);
-      Uart1_SendByte('\r');
-      Uart1_SendByte('\n');
-      */
 
       //BMP280初始化
       BMP280_Init();
@@ -375,83 +362,30 @@ void main(void)
         {
           error = 0;
 
-          /*
-          //OPT3001
-          error = 0;
-          error |= OPT3001_ReadOriginalData(TransRst+1,TransRst+2);   //光照强度数据
-          //Uart1_SendByte(TransRst[1]);
-          //Uart1_SendByte(TransRst[2]);
-          */
-
-          /*
-          //bh1750
-          //error = 0;
-          error |= BH1750_ReadOriginalData(TransRst+1,TransRst+2);    //光照强度数据
-          //Uart1_SendByte(error);
-          //Uart1_SendByte(TransRst[1]);
-          //Uart1_SendByte(TransRst[2]);
-          */
-
           //MAX44009
           //error = 0;
-          error |= MAX_ReadLightData(TransRst+1,TransRst+2);     //光照强度数据
+          error |= MAX_ReadLightData(pTxData+1,pTxData+2);     //光照强度数据
           //Uart1_SendByte(error);
           //Uart1_SendByte(TransRst[1]);
           //Uart1_SendByte(TransRst[2]);
-
-
-          /*
-          //SHT2X
-          //error = 0;
-          //error |= SHT2x_SoftReset();
-          //Uart1_SendByte(error);
-          //error = 0;
-          error |= SHT2x_ReadUserRegister(&userRegister);           //读取用户寄存器
-          if( (userRegister & SHT2x_EOB_MASK) == SHT2x_EOB_ON )     //END OF BATTERY为1，电池电压过低
-            error |= BATTERY_ALERT;
-          Uart1_SendByte(error);
-          //Uart1_SendByte(userRegister);
-          //error = 0;
-          //userRegister = (userRegister & ~SHT2x_RES_MASK) | SHT2x_RES_10_13BIT;
-          //error |= SHT2x_WriteUserRegister(&userRegister);
-          //Uart1_SendByte(error);
-
-          //error = 0;
-          error |= SHT2x_MeasurePoll(TEMP,&sT);             //读取温度信息
-          Uart1_SendByte(error);
-          Uart1_SendByte(sT.s16.u8H);
-          Uart1_SendByte(sT.s16.u8L);
-          error = 0;
-          error |= SHT2x_MeasurePoll(HUMIDITY,&sRH);        //读取湿度信息
-          Uart1_SendByte(error);
-          Uart1_SendByte(sRH.s16.u8H);
-          Uart1_SendByte(sRH.s16.u8L);
-
-          TransRst[3] = sT.s16.u8H;
-          TransRst[4] = sT.s16.u8L;
-
-          TransRst[5] = sRH.s16.u8H;
-          TransRst[6] = sRH.s16.u8L;
-          */
-
 
           //SHT1x
           //error = 0;
           error |= SHT1x_ReadTempResult(&T);           //读取温度信息
-          TransRst[3] = (T >> 8) & 0xFF;
-          TransRst[4] = T & 0xFF;
+          pTxData[3] = (T >> 8) & 0xFF;
+          pTxData[4] = T & 0xFF;
           //Uart1_SendByte(error);
-          //Uart1_SendByte(TransRst[3]);
-          //Uart1_SendByte(TransRst[4]);
+          //Uart1_SendByte(pTxData[3]);
+          //Uart1_SendByte(pTxData[4]);
           //Uart1_SendByte(checksum);
 
           //error = 0;
           error |= SHT1x_ReadRhResult(&RH);      //读取湿度信息
-          TransRst[5] = (RH >> 8) & 0xFF;
-          TransRst[6] = RH & 0xFF;
+          pTxData[5] = (RH >> 8) & 0xFF;
+          pTxData[6] = RH & 0xFF;
           //Uart1_SendByte(error);
-          //Uart1_SendByte(TransRst[5]);
-          //Uart1_SendByte(TransRst[6]);
+          //Uart1_SendByte(pTxData[5]);
+          //Uart1_SendByte(pTxData[6]);
           //Uart1_SendByte(checksum);
 
           //error = 0;
@@ -460,18 +394,15 @@ void main(void)
           //Uart1_SendByte(error);
           //Uart1_SendByte(stateRegister);
 
-
-
           //BMP280
           error |= BMP280_TransStart();
           error |= BMP280_ReadPressResult(&rst);
-          TransRst[7] = (rst >> 8) & 0xFF;
-          TransRst[8] = rst & 0xFF;
+          pTxData[7] = (rst >> 8) & 0xFF;
+          pTxData[8] = rst & 0xFF;
           //Uart1_SendByte(TransRst[7]);
           //Uart1_SendByte(TransRst[8]);
 
-
-          TransRst[0] = error;
+          pTxData[0] = error;
 
           while(RF_SendPacket());
           //RF_SendPacket();
@@ -501,8 +432,8 @@ void main(void)
                   if(s100Rec[4] >= '0' && s100Rec[4] <= '9')      //个位
                     co2PPM += s100Rec[4] - '0';
 
-                  TransRst[0] = co2PPM>>8;
-                  TransRst[1] = co2PPM & 0xFF;
+                  pTxData[0] = co2PPM>>8;
+                  pTxData[1] = co2PPM & 0xFF;
 
                   CO2RecvFlag = 2;      //准备发送
                 }
@@ -550,7 +481,44 @@ void main(void)
 
     }
 }
+*/
 
+
+void main(void)
+{
+
+    halBoardInit();                                         // 初始外围设备
+
+    IIC_Init();                                             // IIC初始化
+
+    if(appMode == RX) Uart1_Init(UART_BAUD_115200,1);                    // Uart1初始化,115200
+    else              Uart1_Init(UART_BAUD_38400,0);
+
+
+    if (appMode == TX)              { C51_RTC_Initial(); }  // 初始化RTC，发送方需要睡眠
+    else                            { Timer3_Init(); }
+
+    if (halRfInit() == FAILED)      { HAL_ASSERT(FALSE); }  // 对硬件抽象层的rf进行初始化
+
+    RF_Initial(appMode);                                    // 初始化RF
+
+    if (!C51_GPIO_ioDetective())    { halLedClear(2); }     // IO检测，判断IO是否有短接，断路
+
+    //C51_GPIO_OffDetective();                                // 设置无关IO为输入，降低功耗
+
+    while(1)
+    {
+      if(appMode == TX)
+      {
+        RF_SendPacket();
+      }
+      else
+      {
+        RF_RecvPacket();
+      }
+    }
+
+}
 
 /****************************************************************
 * 函数 : UART0_ISR() => Uart1接收中断

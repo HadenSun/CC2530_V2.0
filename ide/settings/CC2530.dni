@@ -1,6 +1,6 @@
 [DebugChecksum]
 <<<<<<< HEAD
-Checksum=-694679066
+Checksum=-353496423
 =======
 Checksum=-1387936845
 >>>>>>> refs/heads/master
@@ -31,7 +31,8 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Count=0
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\source\components\awsnrf\awsn_rf.c}.178.3@1" 1 0 0 0 "" 0 ""
+Count=1
 [ChipconEmu]
 Stop timers on halt=1
 Leave target running=0

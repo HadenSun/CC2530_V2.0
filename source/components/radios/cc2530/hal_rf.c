@@ -152,7 +152,7 @@ static void halPaLnaInit(void);
 uint8 halRfInit(void)
 {
     // Enable auto ack and auto crc
-    FRMCTRL0 |= (AUTO_ACK | AUTO_CRC);
+    FRMCTRL0 |= (AUTO_CRC);
 
     // Recommended RX settings
     TXFILTCFG = 0x09;

@@ -1,8 +1,12 @@
 /***************************************************************************************
-* 需要注意的参数值
-* 全局变量：
-*     pointType - 供电5V/3V
-*     appMode - 工作角色 收/发
+* 采集卡：
+*       编译前定义 GATEWAY
+*       默认上传时间 1min
+*
+* 传感器：
+*       编译前定义 SENSOR
+*       电压3v定义 VCC_3V     电压5V定义 VCC_5V
+*       默认上传时间 2s
 ***************************************************************************************/
 
 
@@ -34,25 +38,25 @@
 #define VCC3V               0       //3v供电
 #define VCC5V               1       //5v供电
 
-#define TX_ADDR             0x2500  // 发送地址
+#define TX_ADDR             0x2501  // 发送地址
 #define RX_ADDR             0xBEEF  // 接收地址
 
 #define RF_CHANNEL          25      // 2.4 GHz RF channel 11 - 26  步进为5MHZ
 #define PAN_ID              0x2007  // PAN ID
 
 
-#define SEND_LENGTH         30      // 发送数据每包的长度
+#define SEND_LENGTH         12      // 发送数据每包的长度
 #define CO2_SEND_LENGTH     3
 #define RF_PKT_MAX_SIZE     30      // 数据包最大值
 
 #define RSSI_H              -65     //RSSI上限
-#define RSSI_L              -85      //RSSI下限
+#define RSSI_L              -90      //RSSI下限
 
 
 /************************************************全局变量****************************************/
 static awsnRfCfg_t awsnRfConfig;
 static uint8    pRxData[RF_PKT_MAX_SIZE];               // 接收缓存
-static uint8    pTxData[SEND_LENGTH] = {3,2,1 };  		 	// 需要发送的数据
+static uint8    pTxData[SEND_LENGTH] = {0};  		 	// 需要发送的数据
 static uint16   SendCnt = 0;                            // 计数发送的数据包数
 static uint16   RecvCnt = 0;                            // 计数接收的数据包数
 static uchar    Uart1_temp = 0;                         // 串口接收数据
@@ -67,13 +71,18 @@ u8 CO2RecvCount = 0;            //二氧化碳串口接收计数
 u8 RF_TxCounter = 0;            //发送失败计数
 
 
+#ifdef VCC_5V
 uint8 pointType = VCC5V;
+#endif //VCC_5V
+#ifdef VCC_3V
+uint8 pointType = VCC3V;
+#endif //VCC_3V
 #ifdef GATEWAY
 uint8 appMode = RX;
-#endif
+#endif //GATEWAY
 #ifdef SENSOR
 uint8 appMode = TX;
-#endif
+#endif //SENSOR
 
 
 /************************************************函数声明****************************************/
@@ -114,7 +123,13 @@ static void RF_Initial(uint8 mode)
     awsnRfConfig.panId = PAN_ID;           // 设置节点PAN ID
     awsnRfConfig.channel = RF_CHANNEL;     // 设置节点信道
     awsnRfConfig.txPower = 1;
+#ifdef SENSOR
     awsnRfConfig.cycleTime = 0;
+#endif
+#ifdef GATEWAY
+    awsnRfConfig.cycleTime = 6;
+    TIMER_COUNTER = (uint32)10000 * awsnRfConfig.cycleTime;
+#endif
 
     if (awsnRfInit(&awsnRfConfig) == FAILED)      { HAL_ASSERT(FALSE); }
 
@@ -149,6 +164,8 @@ static u8 RF_SendPacket(void)
     {
         SendCnt++;
         halLedClear(1);         // LED闪烁，用于指示发送成功并且收到应答
+        halMcuWaitMs(500);
+        halLedSet(1);
         states = 0;
     }
     else
@@ -222,7 +239,8 @@ static void RF_RecvPacket(void)
     u16 srcAddr = 0;
     int8 rssi = 0;
 
-    while(!awsnRfPacketIsReady());    // 检查模块是否已经可以接收下一个数据
+    if(!awsnRfPacketIsReady())    // 检查模块是否已经可以接收下一个数据
+      return;
 
     
     length=awsnRfReceive(pRxData, RF_PKT_MAX_SIZE, &rssi);
@@ -239,12 +257,12 @@ static void RF_RecvPacket(void)
             WireSensorData.error[srcAddr] = pRxData[0];
             WireSensorData.Illumination[srcAddr] = pRxData[1]<<8;
             WireSensorData.Illumination[srcAddr] |= pRxData[2];
-            WireSensorData.Temperature[srcAddr] = pRxData[3]<<8;
-            WireSensorData.Temperature[srcAddr] |= pRxData[4];
-            WireSensorData.Humidity[srcAddr] = pRxData[5]<<8;
-            WireSensorData.Humidity[srcAddr] |= pRxData[6];
-            WireSensorData.AirPressure[srcAddr] = pRxData[7]<<8;
-            WireSensorData.AirPressure[srcAddr] |= pRxData[8];
+            WireSensorData.Temperature[srcAddr] = pRxData[4]<<8;
+            WireSensorData.Temperature[srcAddr] |= pRxData[5];
+            WireSensorData.Humidity[srcAddr] = pRxData[7]<<8;
+            WireSensorData.Humidity[srcAddr] |= pRxData[8];
+            WireSensorData.AirPressure[srcAddr] = pRxData[10]<<8;
+            WireSensorData.AirPressure[srcAddr] |= pRxData[11];
             halLedClear(1);
             halMcuWaitMs(500);
             halLedSet(1);
@@ -254,8 +272,8 @@ static void RF_RecvPacket(void)
           srcAddr = awsnRfGetTxSrcAddr();
           srcAddr = srcAddr & 0xff;
           srcAddr = srcAddr - 0x09;
-          co2Concentration[srcAddr] = pRxData[0] << 8;
-          co2Concentration[srcAddr] |= pRxData[1];
+          co2Concentration[srcAddr] = pRxData[1] << 8;
+          co2Concentration[srcAddr] |= pRxData[2];
 
 
           // 闪烁LED，指示收到正确数据
@@ -284,13 +302,8 @@ void Timer3_Init(void)
 
 /*************************************************************************************************
 * 函数 : main() => 主函数，程序入口
-* 说明 ：发送方：每2s被RTC唤醒一次，醒来后发送一包数据，每包数据长度为5个字节，"123/r/n",蓝色LED
-         闪烁表明发送成功，并且收到正确的应答数据。
-         接收方: 如果接收到数据长度为5个字节，且前三个为“123”即数据接收正确，同时蓝色LED闪烁一次
-         指示收到正确数据。
-         注意：appMode = TX（发送程序）， =RX（接收程序）
+
 *************************************************************************************************/
-/*
 void main(void)
 {
     u8 error = 0;
@@ -365,24 +378,26 @@ void main(void)
           //MAX44009
           //error = 0;
           error |= MAX_ReadLightData(pTxData+1,pTxData+2);     //光照强度数据
+          pTxData[0] = 0x10 + error;
           //Uart1_SendByte(error);
           //Uart1_SendByte(TransRst[1]);
           //Uart1_SendByte(TransRst[2]);
 
           //SHT1x
-          //error = 0;
+          error = 0;
           error |= SHT1x_ReadTempResult(&T);           //读取温度信息
-          pTxData[3] = (T >> 8) & 0xFF;
-          pTxData[4] = T & 0xFF;
+          pTxData[4] = (T >> 8) & 0xFF;
+          pTxData[5] = T & 0xFF;
+          pTxData[3] = 0x20 + error;
           //Uart1_SendByte(error);
           //Uart1_SendByte(pTxData[3]);
           //Uart1_SendByte(pTxData[4]);
           //Uart1_SendByte(checksum);
 
-          //error = 0;
+          error = 0;
           error |= SHT1x_ReadRhResult(&RH);      //读取湿度信息
-          pTxData[5] = (RH >> 8) & 0xFF;
-          pTxData[6] = RH & 0xFF;
+          pTxData[7] = (RH >> 8) & 0xFF;
+          pTxData[8] = RH & 0xFF;
           //Uart1_SendByte(error);
           //Uart1_SendByte(pTxData[5]);
           //Uart1_SendByte(pTxData[6]);
@@ -391,18 +406,20 @@ void main(void)
           //error = 0;
           error |= SHT1x_ReadStateRegister(&stateRegister);
           if(stateRegister & 0x40) error |= BATTERY_ALERT;
+          pTxData[6] = 0x30 + error;
           //Uart1_SendByte(error);
           //Uart1_SendByte(stateRegister);
 
           //BMP280
+          error = 0;
           error |= BMP280_TransStart();
           error |= BMP280_ReadPressResult(&rst);
-          pTxData[7] = (rst >> 8) & 0xFF;
-          pTxData[8] = rst & 0xFF;
+          pTxData[9] = 0x40 + error;
+          pTxData[10] = (rst >> 8) & 0xFF;
+          pTxData[11] = rst & 0xFF;
           //Uart1_SendByte(TransRst[7]);
           //Uart1_SendByte(TransRst[8]);
 
-          pTxData[0] = error;
 
           while(RF_SendPacket());
           //RF_SendPacket();
@@ -432,8 +449,9 @@ void main(void)
                   if(s100Rec[4] >= '0' && s100Rec[4] <= '9')      //个位
                     co2PPM += s100Rec[4] - '0';
 
-                  pTxData[0] = co2PPM>>8;
-                  pTxData[1] = co2PPM & 0xFF;
+                  pTxData[0] = 0;
+                  pTxData[1] = co2PPM>>8;
+                  pTxData[2] = co2PPM & 0xFF;
 
                   CO2RecvFlag = 2;      //准备发送
                 }
@@ -481,9 +499,9 @@ void main(void)
 
     }
 }
-*/
 
 
+/*
 void main(void)
 {
 
@@ -519,6 +537,7 @@ void main(void)
     }
 
 }
+*/
 
 /****************************************************************
 * 函数 : UART0_ISR() => Uart1接收中断
@@ -538,7 +557,8 @@ void main(void)
         }
         else
         {
-          //TIMER_COUNTER = (uint32)10000 * (Uart1_temp & 0x7F);
+          awsnRfConfig.cycleTime = Uart1_temp & 0x7F;
+          TIMER_COUNTER = (uint32)10000 * awsnRfConfig.cycleTime;
           counter = 0;
         }
  }

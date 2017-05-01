@@ -276,7 +276,8 @@
           <name>CCDefines</name>
           <state>chip=2530</state>
           <state>xSECURITY_CCM</state>
-          <state>SENSOR</state>
+          <state>GATEWAY</state>
+          <state>VCC_3V</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1059,7 +1060,7 @@
       <name>$PROJ_DIR$\..\source\components\awsnrf\awsn_rf.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\source\components\awsnrf\awsn_rf.h</name>
+      <name>$PROJ_DIR$\..\source\Components\awsnrf\awsn_rf.h</name>
     </file>
   </group>
   <group>
@@ -1094,13 +1095,13 @@
         <name>$PROJ_DIR$\..\source\components\iic\bh1750.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\bh1750.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\bh1750.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\bmp280.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\bmp280.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\bmp280.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\delay.c</name>
@@ -1112,37 +1113,37 @@
         <name>$PROJ_DIR$\..\source\components\iic\iic.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\iic.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\iic.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\max44009.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\max44009.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\max44009.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\opt3001.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\opt3001.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\opt3001.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\sht1x.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\sht1x.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\sht1x.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\sht2x.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\sht2x.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\sht2x.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\source\components\iic\uart.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\source\components\iic\uart.h</name>
+        <name>$PROJ_DIR$\..\source\Components\iic\uart.h</name>
       </file>
     </group>
     <group>

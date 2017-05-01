@@ -18,7 +18,7 @@ typedef enum{
 
 /*********************************************º¯ÊıÉùÃ÷******************************************/
 void Uart1_Init(u8 baud,u8 isInt);
-void Uart1_SendString(char *Date,int len);
+void Uart1_SendString(u8 *Date,int len);
 void Uart1_SendByte(uchar n);
 void Uart1_SendData();
 void Uart1_SendData_Test(u8 i);

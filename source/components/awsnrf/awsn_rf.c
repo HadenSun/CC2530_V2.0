@@ -49,40 +49,40 @@
 /************************************************结构定义****************************************/
 //接收结构
 typedef struct {
-  uint8 seqNumber;
-  uint16 srcAddr;
-  uint16 srcPanId;
-  uint8 txPower;
-  uint8 cycleTime;
-  uint8 length;
-  uint8* pPayload;
-  int8 rssi;
-  volatile uint8 isReady;
-  uint8 status;
+  uint8 seqNumber;          //帧序号
+  uint16 srcAddr;           //发送地址
+  uint16 srcPanId;          //PAN ID
+  uint8 txPower;            //发射功率 0:-3db 1:1db 2:4db
+  uint8 cycleTime;          //发送周期，单位10s
+  uint8 length;             //接收长度
+  uint8* pPayload;          //负载指针
+  int8 rssi;                //接收信号强度
+  volatile uint8 isReady;   //是否完成有效接收
+  uint8 status;             //状态
 } awsnRfRxInfo_t;
 
 //发送结构
 typedef struct {
-  uint8 txSeqNumber;
-  volatile uint8 ackReceived;
-  int8 rssi;
-  uint8 lqi;
-  uint32 frameCounter;
-  uint8 receiveOn;
+  uint8 txSeqNumber;            //发送帧序号
+  volatile uint8 ackReceived;   //是否接收应答
+  int8 rssi;                    //应答信号回馈的rssi
+  uint8 lqi;                    //暂改为周期，单位10s
+  uint32 frameCounter;          //帧计数
+  uint8 receiveOn;              //接收应答信号标志
 } awsnRfTxState_t;
 
 
 //包头
 typedef struct {
-  uint8 packetLength;
-  uint8 fcf0;
+  uint8 packetLength;       //帧长度
+  uint8 fcf0;               
   uint8 fcf1;
-  uint8 seqNumber;
-  uint16 panId;
-  uint16 destAddr;
-  uint16 srcAddr;
-  uint8 txPower;
-  uint8 cycleTime;
+  uint8 seqNumber;          //帧序号
+  uint16 panId;             //PanId
+  uint16 destAddr;          //目的地址
+  uint16 srcAddr;           //源地址
+  uint8 txPower;            //发送功率
+  uint8 cycleTime;          //发送周期，单位10s
 }awsnRfPktHdr_t;            //包结构为 awsnRfPktHdr_t + payload + CRC
 
 
@@ -235,7 +235,7 @@ static void awsnRfRxInterrupt(void)
       rxi.isReady = TRUE;
       rxi.status = AWSN_DATA;
       
-      pStatusWord[1] = 0;
+      pStatusWord[1] = pConfig->cycleTime;
       awsnRfGatewaySendPacket(rxi.srcAddr,pStatusWord,2);
     }
     rxi.seqNumber = pHdr->seqNumber;
@@ -504,7 +504,7 @@ uint8 awsnRfGetTxLqi(void)
 /*************************************************************************************************
 * 函数 ：  awsnRfSleep
 * 介绍 ：  休眠
-* 参数 ：  sleepTime - 睡眠时间
+* 参数 ：  sleepTime - 睡眠时间，单位10s
 *************************************************************************************************/
 void awsnRfSleep(uint8 sleepTime)
 {

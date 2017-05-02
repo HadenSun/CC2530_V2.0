@@ -56,7 +56,7 @@
 /************************************************全局变量****************************************/
 static awsnRfCfg_t awsnRfConfig;
 static uint8    pRxData[RF_PKT_MAX_SIZE];               // 接收缓存
-static uint8    pTxData[SEND_LENGTH] = {0};  		 	// 需要发送的数据
+static uint8    pTxData[SEND_LENGTH] = {0};  		// 需要发送的数据
 static uint16   SendCnt = 0;                            // 计数发送的数据包数
 static uint16   RecvCnt = 0;                            // 计数接收的数据包数
 static uchar    Uart1_temp = 0;                         // 串口接收数据
@@ -69,7 +69,8 @@ u8 receive_trans_flag = 0;      //收到就转发
 u8 CO2RecvFlag = 0;             //二氧化碳串口接收标志，0：正在接收；1：收到0x0D；2：收到0x0A，准备发送
 u8 CO2RecvCount = 0;            //二氧化碳串口接收计数
 u8 RF_TxCounter = 0;            //发送失败计数
-
+u8 UartRecvData[4] = {0};       //串口接收数组，采集卡用
+u8 UartRecvCounter = 0;         //串口接收数组计数，采集卡用
 
 #ifdef VCC_5V
 uint8 pointType = VCC5V;
@@ -186,16 +187,19 @@ static u8 RF_SendPacket(void)
   }
   if(states)
   {
-    if(RF_TxCounter++ > 5)
-    {
+    if(RF_TxCounter++ > 3)
+    {                                   //发送失败3次后加大发射功率
       if(awsnRfConfig.txPower != 2)
       {
         awsnRfConfig.txPower++;
         halRfSetTxPower(awsnRfConfig.txPower);
       }
     }
-    else if(RF_TxCounter > 14)
+    else if(RF_TxCounter > 14)          //重复发送14次 30s 后
+    {
       states = 0;
+      awsnRfConfig.cycleTime = 30;      //可能采集卡未开，每 5min 尝试连接一次
+    }
   }
   else{
     //成功收到应答信号后，提取信号质量
@@ -548,23 +552,34 @@ void main(void)
  {
  	URX1IF = 0;				//清中断标志
 	Uart1_temp = U1DBUF;
-        if(Uart1_temp & 0x80)
+        if(Uart1_temp == 0xA5)                  //起始位
         {
-          if(Uart1_temp & 0x01)
-            receive_trans_flag = 1;
-          else if(!(Uart1_temp & 0x01))
-            receive_trans_flag = 0;
+          UartRecvCounter = 0;
         }
-        else
+        UartRecvData[UartRecvCounter++] = Uart1_temp;
+        
+        if(UartRecvCounter == 4)
         {
-          awsnRfConfig.cycleTime = Uart1_temp & 0x7F;
-          TIMER_COUNTER = (uint32)10000 * awsnRfConfig.cycleTime;
-          counter = 0;
+          if(!Uart_CheckSum(UartRecvData))
+          {
+            if(UartRecvData[1] == 0x01)
+            {
+              awsnRfConfig.cycleTime =  UartRecvData[2];
+              TIMER_COUNTER = (uint32)10000 * awsnRfConfig.cycleTime;
+            }
+            else if(UartRecvData[1] == 0x00)
+              RST_System();
+          }
+          
+          UartRecvCounter = 0;
         }
  }
 
 
-
+/****************************************************************
+* 函数 : T3_ISR() => Timer3 中断
+* 说明 ：仅采集卡使用，决定周期
+****************************************************************/
 #pragma vector = T3_VECTOR
 __interrupt void T3_ISR(void)
 {

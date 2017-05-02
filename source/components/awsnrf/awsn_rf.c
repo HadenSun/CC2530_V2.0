@@ -508,7 +508,7 @@ uint8 awsnRfGetTxLqi(void)
 *************************************************************************************************/
 void awsnRfSleep(uint8 sleepTime)
 {
-  uint16 sleepTotalTime = sleepTime * 10;
+  uint16 sleepTotalTime = sleepTime * 10 - 5;
   uint8 i;
 
   if(sleepTime > 25)

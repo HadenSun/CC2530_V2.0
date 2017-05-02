@@ -22,5 +22,6 @@ void Uart1_SendString(u8 *Date,int len);
 void Uart1_SendByte(uchar n);
 void Uart1_SendData();
 void Uart1_SendData_Test(u8 i);
+u8 Uart_CheckSum(u8 *pData);
 
 #endif

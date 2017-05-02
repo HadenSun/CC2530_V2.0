@@ -220,82 +220,17 @@ void Uart1_SendData()
   temp = temp % 10;
   UartTxData[158] = temp + '0';         //CO2个位
   
-  Crc16(UartTxData, 159,&crc_1,&crc_2);
+  Crc16(UartTxData, 159,&crc_1,&crc_2); //CRC校验位
   UartTxData[159] = crc_1;
   UartTxData[160] = crc_2;
   
-  Uart1_SendString(UartTxData,161);
+  Uart1_SendString(UartTxData,161);     //通过串口发送数据
   
-  /*
-  Uart1_SendByte(0x01);     //起始位
-  Uart1_SendByte(0X02);     //起始位
-  Uart1_SendByte(0x01);     //包含CO2
-  for(i = 0;i < 8;i++)
-  {
-    Uart1_SendByte(i+1);    //地址
-    Uart1_SendByte(WireSensorData.error[i]);     //错误信息
-    temp = WireSensorData.Temperature[i];
-    Uart1_SendByte(temp/1000 + '0');    //温度十位
-    temp = temp % 1000;
-    Uart1_SendByte(temp/100 + '0');     //温度个位
-    Uart1_SendByte('.');          //小数点
-    temp = temp % 100;
-    Uart1_SendByte(temp / 10 + '0');    //一位小数
-
-    temp = WireSensorData.Humidity[i];
-    Uart1_SendByte(temp/1000 + '0');    //湿度十位
-    temp = temp % 1000;
-    Uart1_SendByte(temp/100 + '0');     //湿度个位
-    Uart1_SendByte('.');          //小数点
-    temp = temp % 100;
-    Uart1_SendByte(temp / 10 + '0');    //一位小数
-
-    if(WireSensorData.AirPressure[i])
-      press = (uint32)WireSensorData.AirPressure[i] | 0x10000;
-    else
-      press = 0;
-    Uart1_SendByte(press/100000 + '0');    //气压千位
-    press = press % 100000;
-    Uart1_SendByte(press / 10000 + '0');   //气压百位
-    press = press % 10000;
-    Uart1_SendByte(press / 1000 + '0');    //气压十位
-    press = press % 1000;
-    Uart1_SendByte(press / 100 + '0');     //气压个位，单位hPa
-
-    temp = WireSensorData.Illumination[i];
-    Uart1_SendByte(temp/1000 + '0');    //光照千位
-    temp = temp % 1000;
-    Uart1_SendByte(temp/100 + '0');     //光照百位
-    temp = temp % 100;
-    Uart1_SendByte(temp / 10 + '0');    //光照十位
-    temp = temp % 10;
-    Uart1_SendByte(temp + '0');         //光照个位
-  }
-
-  temp = co2Concentration[0];
-  Uart1_SendByte(0x09);
-  Uart1_SendByte(4);
-  Uart1_SendByte(temp/1000 + '0');    //CO2千位
-  temp = temp % 1000;
-  Uart1_SendByte(temp/100 + '0');     //CO2百位
-  temp = temp % 100;
-  Uart1_SendByte(temp / 10 + '0');    //CO2十位
-  temp = temp % 10;
-  Uart1_SendByte(temp + '0');         //CO2个位
-
-  temp = co2Concentration[1];
-  Uart1_SendByte(0x0A);           //CO2 地址
-  Uart1_SendByte(4);              //长读
-  Uart1_SendByte(temp/1000 + '0');    //CO2千位
-  temp = temp % 1000;
-  Uart1_SendByte(temp/100 + '0');     //CO2百位
-  temp = temp % 100;
-  Uart1_SendByte(temp / 10 + '0');    //CO2十位
-  temp = temp % 10;
-  Uart1_SendByte(temp + '0');         //CO2个位
-  */
 }
 
+/*************************************************************************************************
+* 函数 ：Uart1_SendData_Test(void) => UART1发送测试数据
+*************************************************************************************************/
 void Uart1_SendData_Test(u8 i)
 {
     u8 temp;
@@ -337,4 +272,20 @@ void Uart1_SendData_Test(u8 i)
     Uart1_SendByte(temp / 10 + '0');    //光照十位
     temp = temp % 10;
     Uart1_SendByte(temp + '0');         //光照个位
+}
+
+
+/*************************************************************************************************
+* 函数 ：Uart1_SendData_Test(void) => UART1发送测试数据
+*************************************************************************************************/
+u8 Uart_CheckSum(u8 *pData)
+{
+  u8 checksum = 0;
+  checksum += *pData++;
+  checksum += *pData++;
+  checksum += *pData++;
+  if(checksum == *pData)
+    return 0;
+
+  return 1;
 }

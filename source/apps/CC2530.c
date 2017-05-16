@@ -32,6 +32,8 @@
 #include "uart.h"
 
 /************************************************常量定义****************************************/
+#define INCLUDE_PA 2592
+
 #define TX                  1       // 发送模式
 #define RX                  0       // 接收模式
 
@@ -185,6 +187,8 @@ static u8 RF_SendPacket(void)
     else
       states = 1;
   }
+  
+  
   if(states)
   {
     if(RF_TxCounter++ > 3)

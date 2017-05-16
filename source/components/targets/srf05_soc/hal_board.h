@@ -27,6 +27,16 @@
 // Clock
 #define BSP_CONFIG_CLOCK_MHZ                32
 
+//PAEN
+#define HAL_BOARD_IO_PAEN_PORT           1
+#define HAL_BOARD_IO_PAEN_PIN            1
+//LNAEN
+#define HAL_BOARD_IO_LNAEN_PORT           1
+#define HAL_BOARD_IO_LNAEN_PIN            0
+//HGM
+#define HAL_BOARD_IO_HGM_PORT           0
+#define HAL_BOARD_IO_HGM_PIN            7
+
 // LEDs
 #define HAL_BOARD_IO_LED_1_PORT        2   // Blue
 #define HAL_BOARD_IO_LED_1_PIN         0
@@ -41,6 +51,14 @@
 #define HAL_DEBOUNCE(expr)    { int i; for (i=0; i<500; i++) { if (!(expr)) i = 0; } }
 
 /*********************************************宏定义*********************************************/
+#define HAL_PAEN_ON()             MCU_IO_SET_HIGH(HAL_BOARD_IO_PAEN_PORT, HAL_BOARD_IO_PAEN_PIN)
+#define HAL_PAEN_OFF()            MCU_IO_SET_LOW(HAL_BOARD_IO_PAEN_PORT, HAL_BOARD_IO_PAEN_PIN)
+
+#define HAL_LNAEN_ON()             MCU_IO_SET_HIGH(HAL_BOARD_IO_LNAEN_PORT, HAL_BOARD_IO_LNAEN_PIN)
+#define HAL_LNAEN_OFF()            MCU_IO_SET_LOW(HAL_BOARD_IO_LNAEN_PORT, HAL_BOARD_IO_LNAEN_PIN)
+
+#define HAL_HGM_ON()             MCU_IO_SET_HIGH(HAL_BOARD_IO_HGM_PORT, HAL_BOARD_IO_HGM_PIN)
+#define HAL_HGM_OFF()            MCU_IO_SET_LOW(HAL_BOARD_IO_HGM_PORT, HAL_BOARD_IO_HGM_PIN)
 // LED操作函数， SET = 关闭， CLR = 打开， TGL = 翻转 
 #define HAL_LED_SET_1()         MCU_IO_SET_HIGH(HAL_BOARD_IO_LED_1_PORT, HAL_BOARD_IO_LED_1_PIN)
 #define HAL_LED_SET_2()         MCU_IO_SET_HIGH(HAL_BOARD_IO_LED_2_PORT, HAL_BOARD_IO_LED_2_PIN)

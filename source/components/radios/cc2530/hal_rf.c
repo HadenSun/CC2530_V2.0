@@ -85,6 +85,31 @@
 #define CC2530_91_TXPOWER_18_DBM      0xC5
 #define CC2530_91_TXPOWER_20_DBM      0xE5
 
+#elif INCLUDE_PA==2592  //PA:cc2592
+
+//Support for PA/LNA
+#define HAL_PA_LNA_INIT()
+
+// Select CC2592 RX high gain mode 
+#define HAL_PA_LNA_RX_HGM() st( uint8 i; P0_7 = 1; for (i=0; i<8; i++) asm("NOP"); )
+
+// Select CC2592 RX low gain mode
+#define HAL_PA_LNA_RX_LGM() st( uint8 i; P0_7 = 0; for (i=0; i<8; i++) asm("NOP"); )
+
+// TX power lookup index
+#define HAL_RF_TXPOWER_0_DBM          0
+#define HAL_RF_TXPOWER_13_DBM         1
+#define HAL_RF_TXPOWER_16_DBM         2
+#define HAL_RF_TXPOWER_18_DBM         3
+#define HAL_RF_TXPOWER_20_DBM         4
+
+// TX power values
+#define CC2530_2592_TXPOWER_0_DBM       0x25
+#define CC2530_2592_TXPOWER_13_DBM      0x85
+#define CC2530_2592_TXPOWER_16_DBM      0xA5
+#define CC2530_2592_TXPOWER_18_DBM      0xC5
+#define CC2530_2592_TXPOWER_20_DBM      0xF5
+
 #else // dummy macros when not using CC2591
 
 #define HAL_PA_LNA_INIT()
@@ -101,6 +126,15 @@
 * GLOBAL DATA
 */
 #if INCLUDE_PA==2591
+static const menuItem_t pPowerSettings[] =
+{
+  "0dBm", HAL_RF_TXPOWER_0_DBM,
+  "13dBm", HAL_RF_TXPOWER_13_DBM,
+  "16dBm", HAL_RF_TXPOWER_16_DBM,
+  "18dBm", HAL_RF_TXPOWER_18_DBM,
+  "20dBm", HAL_RF_TXPOWER_20_DBM
+};
+#elif INCLUDE_PA==2592
 static const menuItem_t pPowerSettings[] =
 {
   "0dBm", HAL_RF_TXPOWER_0_DBM,
@@ -305,6 +339,12 @@ uint8 halRfSetTxPower(uint8 power)
     case HAL_RF_TXPOWER_16_DBM: n = CC2530_91_TXPOWER_16_DBM; break;
     case HAL_RF_TXPOWER_18_DBM: n = CC2530_91_TXPOWER_18_DBM; break;
     case HAL_RF_TXPOWER_20_DBM: n = CC2530_91_TXPOWER_20_DBM; break;
+#elif INCLUDE_PA==2592
+    case HAL_RF_TXPOWER_0_DBM: n = CC2530_2592_TXPOWER_0_DBM; break;
+    case HAL_RF_TXPOWER_13_DBM: n = CC2530_2592_TXPOWER_13_DBM; break;
+    case HAL_RF_TXPOWER_16_DBM: n = CC2530_2592_TXPOWER_16_DBM; break;
+    case HAL_RF_TXPOWER_18_DBM: n = CC2530_2592_TXPOWER_18_DBM; break;
+    case HAL_RF_TXPOWER_20_DBM: n = CC2530_2592_TXPOWER_20_DBM; break; 
 #else
     case HAL_RF_TXPOWER_MIN_3_DBM: n = CC2530_TXPOWER_MIN_3_DBM; break;
     case HAL_RF_TXPOWER_0_DBM: n = CC2530_TXPOWER_0_DBM; break;
@@ -619,6 +659,20 @@ static void halPaLnaInit(void)
         halRfSetGain(HAL_RF_GAIN_HIGH);
     }
 
+#elif INCLUDE_PA==2592
+    // Initialize CC22592
+    static uint8 fFirst = TRUE;
+    
+    if(fFirst) {
+      AGCCTRL1 = 0x15;
+      FSCAL1 = 0x0;
+      RFC_OBS_CTRL0 = 0x68;
+      RFC_OBS_CTRL1 = 0x6A;
+      OBSSEL1 = 0xFB;
+      OBSSEL0 = 0xFC;
+      P0DIR |= 0x80;
+      halRfSetGain(HAL_RF_GAIN_HIGH);
+    }
 #else // do nothing
 #endif
 }

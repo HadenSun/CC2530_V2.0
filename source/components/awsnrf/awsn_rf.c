@@ -12,6 +12,7 @@
 #include "hal_mcu.h"      //使用 halMcuWaiUs()
 #include "hal_rf.h"
 #include "awsn_rf.h"
+#include "hal_board.h"
 #include "util.h"
 #include "string.h"
 #include "c51_rtc.h"
@@ -374,6 +375,10 @@ uint8 awsnRfGatewaySendPacket(uint16 destAddr,uint8 *pPayload,uint8 length)
 
   halRfWriteTxBuf(txMpdu,mpduLength);
 
+  //CC2592发送模式
+  HAL_PAEN_ON();
+  HAL_LNAEN_OFF();
+  HAL_HGM_ON();
 
   //发送数据
   if(halRfTransmit() != SUCCESS) {
@@ -382,6 +387,11 @@ uint8 awsnRfGatewaySendPacket(uint16 destAddr,uint8 *pPayload,uint8 length)
   else {
     status = SUCCESS;
   }
+  
+  //cc2592高增益接收模式
+  HAL_PAEN_ON();
+  HAL_LNAEN_ON();
+  HAL_HGM_ON();
 
 
   if(status == SUCCESS)

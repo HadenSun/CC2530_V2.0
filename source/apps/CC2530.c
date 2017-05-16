@@ -38,7 +38,7 @@
 #define VCC3V               0       //3v供电
 #define VCC5V               1       //5v供电
 
-#define TX_ADDR             0x2501  // 发送地址
+#define TX_ADDR             0x2509  // 发送地址
 #define RX_ADDR             0xBEEF  // 接收地址
 
 #define RF_CHANNEL          25      // 2.4 GHz RF channel 11 - 26  步进为5MHZ

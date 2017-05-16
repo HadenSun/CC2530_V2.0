@@ -1,6 +1,6 @@
 [DebugChecksum]
 <<<<<<< HEAD
-Checksum=-1726346140
+Checksum=-217017131
 =======
 Checksum=-1387936845
 >>>>>>> refs/heads/master
@@ -33,7 +33,7 @@ LogFile=_ ""
 [Breakpoints]
 Count=0
 [ChipconEmu]
-Stop timers on halt=1
+Stop timers on halt=0
 Leave target running=0
 [Aliases]
 Count=0

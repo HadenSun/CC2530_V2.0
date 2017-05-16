@@ -277,6 +277,8 @@ void Uart1_SendData_Test(u8 i)
 
 /*************************************************************************************************
 * 函数 ：Uart1_SendData_Test(void) => UART1发送测试数据
+* 说明 ：串口数据格式为：起始位（0xA5）+命令+数据+校验位
+*        校验位为前面位数之和，包括起始位，如果和校验为A5则+1
 *************************************************************************************************/
 u8 Uart_CheckSum(u8 *pData)
 {
@@ -284,6 +286,8 @@ u8 Uart_CheckSum(u8 *pData)
   checksum += *pData++;
   checksum += *pData++;
   checksum += *pData++;
+  if(checksum == 0xA5)
+    checksum++;
   if(checksum == *pData)
     return 0;
 

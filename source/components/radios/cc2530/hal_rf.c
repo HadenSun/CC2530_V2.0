@@ -58,7 +58,6 @@
 #define ISFLUSHTX()             st(RFST = 0xEE;)
 
 // CC2590-CC2591 support
-#define INCLUDE_PA 2592
 
 #if INCLUDE_PA==2591
 

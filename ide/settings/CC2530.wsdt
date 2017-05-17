@@ -24,7 +24,7 @@
     <Windows>
       
       
-    <Wnd0>
+    <Wnd1>
         <Tabs>
           <Tab>
             <Identity>TabID-7022-25869</Identity>
@@ -36,7 +36,7 @@
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd0><Wnd2>
+      <SelectedTab>0</SelectedTab></Wnd1><Wnd3>
         <Tabs>
           <Tab>
             <Identity>TabID-7838-26058</Identity>
@@ -46,20 +46,20 @@
           </Tab>
         <Tab><Identity>TabID-31821-15495</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd2></Windows>
+      <SelectedTab>0</SelectedTab></Wnd3></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\awsnrf\awsn_rf.h</Filename><XPos>0</XPos><YPos>19</YPos><SelStart>604</SelStart><SelEnd>604</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\awsnrf\awsn_rf.c</Filename><XPos>0</XPos><YPos>56</YPos><SelStart>5007</SelStart><SelEnd>5007</SelEnd></Tab><ActiveTab>1</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\apps\CC2530.c</Filename><XPos>0</XPos><YPos>303</YPos><SelStart>9371</SelStart><SelEnd>9371</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\radios\cc2530\hal_rf.c</Filename><XPos>0</XPos><YPos>328</YPos><SelStart>8326</SelStart><SelEnd>8326</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\targets\srf05_soc\hal_board.h</Filename><XPos>0</XPos><YPos>18</YPos><SelStart>927</SelStart><SelEnd>927</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\targets\srf05_soc\hal_board.c</Filename><XPos>0</XPos><YPos>58</YPos><SelStart>2027</SelStart><SelEnd>2027</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\radios\cc2530\hal_mcu.c</Filename><XPos>0</XPos><YPos>12</YPos><SelStart>839</SelStart><SelEnd>839</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\common\hal_int.c</Filename><XPos>0</XPos><YPos>14</YPos><SelStart>757</SelStart><SelEnd>757</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\iic\iic.c</Filename><XPos>0</XPos><YPos>3</YPos><SelStart>587</SelStart><SelEnd>587</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\targets\srf05_soc\C51_Gpio.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>499</SelStart><SelEnd>499</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\radios\cc2530\clock.c</Filename><XPos>0</XPos><YPos>37</YPos><SelStart>1836</SelStart><SelEnd>1836</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\awsnrf\awsn_rf.h</Filename><XPos>0</XPos><YPos>19</YPos><SelStart>604</SelStart><SelEnd>604</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\radios\cc2530\hal_rf.c</Filename><XPos>0</XPos><YPos>522</YPos><SelStart>12697</SelStart><SelEnd>12697</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\targets\srf05_soc\hal_board.h</Filename><XPos>0</XPos><YPos>18</YPos><SelStart>927</SelStart><SelEnd>927</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\awsnrf\awsn_rf.c</Filename><XPos>0</XPos><YPos>104</YPos><SelStart>3755</SelStart><SelEnd>3755</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\targets\srf05_soc\hal_board.c</Filename><XPos>0</XPos><YPos>69</YPos><SelStart>2176</SelStart><SelEnd>2176</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\radios\cc2530\hal_mcu.c</Filename><XPos>0</XPos><YPos>12</YPos><SelStart>839</SelStart><SelEnd>839</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\common\hal_int.c</Filename><XPos>0</XPos><YPos>19</YPos><SelStart>757</SelStart><SelEnd>757</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\iic\iic.c</Filename><XPos>0</XPos><YPos>14</YPos><SelStart>756</SelStart><SelEnd>756</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\targets\srf05_soc\C51_Gpio.c</Filename><XPos>0</XPos><YPos>39</YPos><SelStart>2137</SelStart><SelEnd>2137</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\radios\cc2530\clock.c</Filename><XPos>102</XPos><YPos>37</YPos><SelStart>1836</SelStart><SelEnd>1836</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\iic\uart.c</Filename><XPos>0</XPos><YPos>74</YPos><SelStart>4691</SelStart><SelEnd>4691</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\components\targets\srf05_soc\C51_Rtc.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>525</SelStart><SelEnd>525</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\targets\srf05_soc\hal_led.c</Filename><XPos>0</XPos><YPos>43</YPos><SelStart>1374</SelStart><SelEnd>1374</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\apps\CC2530.c</Filename><XPos>0</XPos><YPos>92</YPos><SelStart>9380</SelStart><SelEnd>9380</SelEnd></Tab><ActiveTab>13</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\source\Components\basicrf\basic_rf.c</Filename><XPos>0</XPos><YPos>99</YPos><SelStart>3789</SelStart><SelEnd>3789</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-04741af0><key>iaridepm.enu1</key></Toolbar-04741af0></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>511</Bottom><Right>266</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>146413</sizeHorzCX><sizeHorzCY>291971</sizeHorzCY><sizeVertCX>196193</sizeVertCX><sizeVertCY>748905</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>129</Bottom><Right>1368</Right><x>-2</x><y>-2</y><xscreen>1370</xscreen><yscreen>131</yscreen><sizeHorzCX>1002928</sizeHorzCX><sizeHorzCY>191241</sizeHorzCY><sizeVertCX>146413</sizeVertCX><sizeVertCY>291971</sizeVertCY></Rect></Wnd2></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-048e1ac8><key>iaridepm.enu1</key></Toolbar-048e1ac8></Sizes></Row0><Row1><Sizes/></Row1><Row2><Sizes/></Row2></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>511</Bottom><Right>266</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>146413</sizeHorzCX><sizeHorzCY>291971</sizeHorzCY><sizeVertCX>196193</sizeVertCX><sizeVertCY>748905</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>129</Bottom><Right>1368</Right><x>-2</x><y>-2</y><xscreen>1370</xscreen><yscreen>131</yscreen><sizeHorzCX>1002928</sizeHorzCX><sizeHorzCY>191241</sizeHorzCY><sizeVertCX>146413</sizeVertCX><sizeVertCY>291971</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

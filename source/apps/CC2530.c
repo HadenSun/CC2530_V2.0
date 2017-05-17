@@ -32,7 +32,7 @@
 #include "uart.h"
 
 /************************************************常量定义****************************************/
-#define INCLUDE_PA 2592
+//#define INCLUDE_PA 2592
 
 #define TX                  1       // 发送模式
 #define RX                  0       // 接收模式
@@ -136,8 +136,8 @@ static void RF_Initial(uint8 mode)
 
     if (awsnRfInit(&awsnRfConfig) == FAILED)      { HAL_ASSERT(FALSE); }
 
-    if(RX == mode)    { halRfSetTxPower(2); }                     // 设置输出功率为4dbm
-    else              { halRfSetTxPower(2); }
+    if(RX == mode)    { halRfSetTxPower(4); }                     // 设置输出功率为4dbm
+    else              { halRfSetTxPower(1); }
 
     if (RX == mode)     { awsnRfReceiveOn();  }
     else                { awsnRfReceiveOff(); }
@@ -160,6 +160,8 @@ static void RST_System(void)
 static u8 RF_SendPacket(void)
 {
   u8 states = 1;
+  
+  
   // 发送一包数据，并判断是否发送成功（收到应答）
   if(pointType == VCC3V)
   {
@@ -191,7 +193,7 @@ static u8 RF_SendPacket(void)
   
   if(states)
   {
-    if(RF_TxCounter++ > 3)
+    if(RF_TxCounter++ == 3)
     {                                   //发送失败3次后加大发射功率
       if(awsnRfConfig.txPower != 2)
       {

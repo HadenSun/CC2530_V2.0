@@ -121,7 +121,7 @@ static void awsnRfBuildHeader(uint8* buffer,uint16 destAddr, uint8 payloadLength
   #endif
   pHdr->fcf0 = LO_UINT16(fcf);
   pHdr->fcf1 = HI_UINT16(fcf);
-  pHdr->seqNumber = txState.txSeqNumber;
+  pHdr->seqNumber = ((pConfig->myAddr & 0x0F) << 4) | (txState.txSeqNumber & 0x0F);
   pHdr->panId = pConfig->panId;
   pHdr->destAddr = destAddr;
   pHdr->srcAddr = pConfig->myAddr;
@@ -267,6 +267,7 @@ uint8 awsnRfInit(awsnRfCfg_t* pRfConfig)
   rxi.pPayload = NULL;
 
   txState.frameCounter = 0;
+  txState.txSeqNumber = 0;
   txState.receiveOn = TRUE;
 
   //设置频道
@@ -318,7 +319,7 @@ uint8 awsnRfSensorSendPacket(uint16 destAddr,uint8 *pPayload,uint8 length)
   mpduLength = awsnRfBuildMpdu(destAddr,pPayload,length);
 
   halRfWriteTxBuf(txMpdu,mpduLength);
-
+  
   //打开接收中断，等待应答
   halRfEnableRxInterrupt();
   
@@ -329,6 +330,7 @@ uint8 awsnRfSensorSendPacket(uint16 destAddr,uint8 *pPayload,uint8 length)
   if(halRfTransmit() != SUCCESS) {
     status = FAILED;
   }
+  
 
   //超时设置，包含12个传输时间，应答包的传送时间，和一些额外时间
   //halMcuWaitUs((12 * AWSN_RF_SYMBOL_DURATION) + (AWSN_RF_ACK_DURATION) + (2 * AWSN_RF_SYMBOL_DURATION) + 100);
@@ -345,6 +347,8 @@ uint8 awsnRfSensorSendPacket(uint16 destAddr,uint8 *pPayload,uint8 length)
   {
     txState.txSeqNumber++;
   }
+  
+
 
   return status;
 }
